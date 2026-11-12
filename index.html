@@ -7,6 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+  "mindar-image-three": "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"
+} }
+</script>
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -159,8 +166,13 @@
     <model-viewer id="m-viewer" hidden camera-controls ar
       ar-modes="scene-viewer quick-look webxr" ar-placement="floor"
       shadow-intensity="1" alt="Vista 3D del plato">
-      <button slot="ar-button" class="btn btn-solid ar-btn" type="button">Ver en mi mesa</button>
+      <button slot="ar-button" class="btn btn-solid ar-btn" type="button">Opción 1: ver en mi mesa</button>
     </model-viewer>
+    <div class="opciones" id="m-opciones" hidden>
+      <p>Opción 1: tocá el botón sobre el plato para verlo en tu mesa.</p>
+      <p>Si no te funciona, probá la opción 2.</p>
+      <button class="btn btn-line" type="button" id="m-mind">Opción 2: ver con el cartel de la mesa</button>
+    </div>
     <div class="stage" id="m-stage">
       <span id="m-emoji">🍔</span>
       <p>La vista en realidad aumentada va a estar disponible pronto.</p>
@@ -171,6 +183,12 @@
       <strong id="m-price"></strong>
     </div>
   </div>
+</div>
+
+<div class="mind" id="mind" hidden>
+  <div class="mind-view" id="mind-view"></div>
+  <p class="mind-hint" id="mind-hint"></p>
+  <button class="close" type="button" id="mind-close" aria-label="Cerrar cámara">×</button>
 </div>
 
 <script src="funciones.js"></script>
