@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Beto's Reconquista · Carta</title>
+<title>Betos Reconquista · Carta</title>
 <link rel="icon" href="models/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
       <ul class="datos">
         <li>Martes a domingos</li>
         <li>Roca 1323</li>
-        <li><a href="tel:+543482636340">3482 636340</a></li>
+        <li><a href="https://wa.me/5493482636340" target="_blank" rel="noopener">WhatsApp</a></li>
       </ul>
     </div>
   </div>
@@ -53,22 +53,29 @@
   <div class="hoja" role="dialog" aria-modal="true" aria-labelledby="m-nombre">
     <button class="cerrar" type="button" id="m-cerrar" aria-label="Cerrar">×</button>
 
-    <div class="aviso" id="m-aviso" role="alert" hidden>
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 3.5L2.5 20h19L12 3.5z"/><path d="M12 10v4.5"/><path d="M12 17.3h.01"/>
-      </svg>
-      <div>
+    <div class="visor-caja">
+      <!-- El visor 3D se crea desde funciones.js cada vez que se abre un plato -->
+      <div id="m-zona"></div>
+      <!-- Aviso centrado: solo aparece al tocar "Ver en mi mesa" en un celular no compatible -->
+      <div class="aviso" id="m-aviso" role="status" hidden>
+        <button class="aviso-x" type="button" id="m-aviso-x" aria-label="Cerrar aviso">×</button>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3.5L2.5 20h19L12 3.5z"/><path d="M12 10v4.5"/><path d="M12 17.3h.01"/>
+        </svg>
         <strong>Tu celular no es compatible con la realidad aumentada</strong>
-        <span>Igual podés girar el plato en 3D con el dedo.</span>
+        <span>Igual podés girar el plato con el dedo.</span>
+      </div>
+
       </div>
     </div>
 
-    <!-- El visor 3D se crea desde funciones.js cada vez que se abre un plato -->
-    <div id="m-zona"></div>
-
-    <h3 id="m-nombre"></h3>
-    <p class="m-desc" id="m-desc"></p>
-    <strong class="m-precio" id="m-precio"></strong>
+    <div class="m-info">
+      <div class="m-fila">
+        <h3 id="m-nombre"></h3>
+        <strong class="m-precio" id="m-precio"></strong>
+      </div>
+      <p class="m-desc" id="m-desc"></p>
+    </div>
   </div>
 </div>
 

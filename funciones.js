@@ -12,6 +12,7 @@ const aviso = document.getElementById('m-aviso');
 const cerrar = document.getElementById('m-cerrar');
 let visor = null;
 let ultimoBoton = null;
+let temporizadorAviso = null;
 
 const precio = function (n) {
   return '$' + n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -40,10 +41,11 @@ CARTA.forEach(function (cat, c) {
     const card = document.createElement('article');
     card.className = 'plato';
     card.dataset.texto = limpio(p.nombre + ' ' + p.desc);
+    // Todos los platos tienen "Ver plato" (si no hay modelo 3D, se muestra "próximamente")
     card.innerHTML =
       '<h3>' + p.nombre + '</h3><p>' + p.desc + '</p>' +
       '<div class="pie"><span class="precio">' + precio(p.precio) + '</span>' +
-      (p.modelo ? '<button type="button" class="ver" data-c="' + c + '" data-p="' + i + '">Ver plato</button>' : '') +
+      '<button type="button" class="ver" data-c="' + c + '" data-p="' + i + '">Ver plato</button>' +
       '</div>';
     grilla.appendChild(card);
   });
@@ -109,21 +111,29 @@ const observador = new IntersectionObserver(function (entradas) {
 }, { rootMargin: '-35% 0px -60% 0px' });
 document.querySelectorAll('.cat').forEach(function (s) { observador.observe(s); });
 
-// Aviso de "celular no compatible": resaltado y con animación cada vez que aparece
+// Aviso de "celular no compatible": aparece en el centro de la imagen,
+// se va solo a los 6 segundos, al tocarlo o con su propia cruz
 function mostrarAviso() {
+  clearTimeout(temporizadorAviso);
   aviso.hidden = false;
   aviso.classList.remove('alerta');
   void aviso.offsetWidth; // reinicia la animación
   aviso.classList.add('alerta');
-  aviso.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  temporizadorAviso = setTimeout(ocultarAviso, 6000);
 }
 function ocultarAviso() {
+  clearTimeout(temporizadorAviso);
   aviso.hidden = true;
   aviso.classList.remove('alerta');
 }
+aviso.addEventListener('click', ocultarAviso);
+document.getElementById('m-aviso-x').addEventListener('click', function (e) {
+  e.stopPropagation();
+  ocultarAviso();
+});
 
 // Crea un visor 3D nuevo cada vez que se abre un plato.
-// Así siempre arranca de cero (botón "Ver en mi mesa" y aviso incluidos),
+// Así siempre arranca de cero (botón "Ver en mi mesa" incluido),
 // aunque se vuelva a abrir el mismo plato sin recargar la página.
 function crearVisor(modelo) {
   zonaVisor.innerHTML = '';
@@ -131,18 +141,14 @@ function crearVisor(modelo) {
   v.id = 'm-visor';
   v.setAttribute('camera-controls', '');
   v.setAttribute('ar', '');
-  v.setAttribute('ar-modes', 'scene-viewer quick-look');
+  // webxr primero: abre la cámara dentro de Chrome (como modelviewer.dev); si no, Scene Viewer / Quick Look
+  v.setAttribute('ar-modes', 'webxr scene-viewer quick-look');
   v.setAttribute('ar-placement', 'floor');
   v.setAttribute('shadow-intensity', '1');
   v.setAttribute('alt', 'Vista 3D del plato');
   v.innerHTML = '<button slot="ar-button" class="ar-btn" type="button">Ver en mi mesa</button>';
 
-  // Si el celular no soporta realidad aumentada, se avisa
-  v.addEventListener('load', function () {
-    setTimeout(function () {
-      if (v === visor && modal.classList.contains('abierto') && !v.canActivateAR) mostrarAviso();
-    }, 300);
-  });
+  // El aviso aparece solo si falla la AR o si toca "Ver en mi mesa" en un celular no compatible
   v.addEventListener('ar-status', function (e) {
     if (v === visor && e.detail.status === 'failed') mostrarAviso();
   });
@@ -155,7 +161,18 @@ function crearVisor(modelo) {
   return v;
 }
 
-// Ver plato (realidad aumentada)
+// Cartel para los platos que todavía no tienen modelo 3D
+function crearProximamente() {
+  zonaVisor.innerHTML =
+    '<div class="proximamente">' +
+      '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3L28 9.5V22.5L16 29L4 22.5V9.5Z"/><path d="M4 9.5L16 16L28 9.5"/><path d="M16 16V29"/></svg>' +
+      '<strong>Vista 3D próximamente</strong>' +
+      '<span>Estamos preparando la vista previa de este plato. El plato ya está disponible para pedir.</span>' +
+    '</div>';
+  return null;
+}
+
+// Ver plato
 carta.addEventListener('click', function (e) {
   const btn = e.target.closest('.ver');
   if (!btn) return;
@@ -164,7 +181,7 @@ carta.addEventListener('click', function (e) {
   document.getElementById('m-desc').textContent = plato.desc;
   document.getElementById('m-precio').textContent = precio(plato.precio);
   ocultarAviso();
-  visor = crearVisor(plato.modelo);
+  visor = plato.modelo ? crearVisor(plato.modelo) : crearProximamente();
   ultimoBoton = btn;
   modal.classList.add('abierto');
   modal.setAttribute('aria-hidden', 'false');
@@ -176,13 +193,13 @@ function cerrarModal() {
   modal.classList.remove('abierto');
   modal.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
+  ocultarAviso();
   if (ultimoBoton) ultimoBoton.focus();
   // Se destruye el visor una vez terminada la animación de cierre
   setTimeout(function () {
     if (!modal.classList.contains('abierto')) {
       zonaVisor.innerHTML = '';
       visor = null;
-      ocultarAviso();
     }
   }, 300);
 }

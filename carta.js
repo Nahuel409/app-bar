@@ -1,7 +1,14 @@
 // CARTA. Para cambiar platos, precios o categorías se edita solo este archivo.
 // Los platos de "Pizzas Masa Madre" son de la carta real; el resto son de EJEMPLO hasta tener la carta completa.
-// Para activar la realidad aumentada en un plato, agregarle: modelo: 'models/nombre.glb'
+//
+// VISTA 3D / REALIDAD AUMENTADA:
+// - Para un plato con su modelo real, agregarle:  modelo: 'models/nombre.glb'
+// - Para un plato SIN modelo todavía (muestra "Vista 3D próximamente"), agregarle:  modelo: null
+// - Los platos que no tengan la línea "modelo" usan el astronauta de prueba (ver el final de este archivo).
+//
 // Los íconos son dibujos SVG de línea (viewBox 32x32). Cada categoría usa uno con: icono: ICONOS.nombre
+
+const MODELO_PRUEBA = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb';
 
 const ICONOS = {
   pizzaSlice: '<path d="M4.5 9.5Q16 3.5 27.5 9.5"/><path d="M4.5 9.5L16 28.5L27.5 9.5"/><path d="M6.9 13.5Q16 8.5 25.1 13.5"/><circle cx="13" cy="17" r="1.6"/><circle cx="19" cy="17" r="1.6"/><circle cx="16" cy="23" r="1.4"/>',
@@ -23,8 +30,7 @@ const ICONOS = {
 
 const CARTA = [
   { id: 'pizzas-masa-madre', nombre: 'Pizzas Masa Madre', icono: ICONOS.pizzaSlice, platos: [
-    { nombre: 'Italiana Muzza', desc: 'Masa madre, salsa, muzza, morrón, aceitunas, orégano', precio: 16000,
-      modelo: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb' /* modelo de prueba, reemplazar por el real */ },
+    { nombre: 'Italiana Muzza', desc: 'Masa madre, salsa, muzza, morrón, aceitunas, orégano', precio: 16000 },
     { nombre: 'Italiana Especial', desc: 'Masa madre, salsa, muzza, paleta, huevo, rodaja de tomate, morrón, aceitunas, orégano', precio: 17500 },
     { nombre: 'Italiana Fugazza', desc: 'Masa madre, salsa, muzza, cebolla salteada, morrón, aceitunas, orégano', precio: 17000 },
     { nombre: 'Italiana Rúcula', desc: 'Masa madre, salsa, muzza, rúcula, queso parmesano, aceitunas negras, aceite de oliva, orégano', precio: 17000 },
@@ -57,7 +63,8 @@ const CARTA = [
   { id: 'bebidas', nombre: 'Bebidas', icono: ICONOS.bebida, platos: [
     { nombre: 'Gaseosa 500 ml', desc: 'Línea Coca-Cola', precio: 3000 },
     { nombre: 'Cerveza 1 litro', desc: 'Rubia', precio: 6500 },
-    { nombre: 'Agua mineral', desc: 'Sin gas o con gas', precio: 2500 }
+    // Ejemplo de plato SIN modelo 3D todavía: muestra "Vista 3D próximamente"
+    { nombre: 'Agua mineral', desc: 'Sin gas o con gas', precio: 2500, modelo: null }
   ]},
   { id: 'picadas', nombre: 'Picadas', icono: ICONOS.picada, platos: [
     { nombre: 'Picada para dos', desc: 'Fiambres, quesos, aceitunas y papas', precio: 20000 },
@@ -97,3 +104,11 @@ const CARTA = [
     { nombre: 'Ensalada completa', desc: 'Lechuga, tomate, huevo, zanahoria y atún', precio: 9000 }
   ]}
 ];
+
+// Por ahora, todos los platos que no tienen "modelo" usan el astronauta de prueba.
+// Cuando todos tengan su modelo real, este bloque se puede borrar.
+CARTA.forEach(function (cat) {
+  cat.platos.forEach(function (p) {
+    if (p.modelo === undefined) p.modelo = MODELO_PRUEBA;
+  });
+});
