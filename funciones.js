@@ -10,6 +10,7 @@ const modal = document.getElementById('modal');
 const zonaVisor = document.getElementById('m-zona');
 const aviso = document.getElementById('m-aviso');
 const cerrar = document.getElementById('m-cerrar');
+const botonAR = document.getElementById('m-ar');
 let visor = null;
 let ultimoBoton = null;
 let temporizadorAviso = null;
@@ -132,28 +133,42 @@ document.getElementById('m-aviso-x').addEventListener('click', function (e) {
   ocultarAviso();
 });
 
+// Botón "Ver en mi mesa": es propio (vive en el index, fuera del visor 3D),
+// así siempre aparece al abrir un plato, sin importar lo que haya pasado antes.
+// Si el celular es compatible abre la realidad aumentada; si no, muestra el aviso.
+botonAR.addEventListener('click', function () {
+  if (!visor) return;
+  if (visor.canActivateAR) {
+    try {
+      const r = visor.activateAR();
+      if (r && typeof r.catch === 'function') r.catch(mostrarAviso);
+    } catch (err) {
+      mostrarAviso();
+    }
+  } else {
+    mostrarAviso();
+  }
+});
+
 // Crea un visor 3D nuevo cada vez que se abre un plato.
-// Así siempre arranca de cero (botón "Ver en mi mesa" incluido),
-// aunque se vuelva a abrir el mismo plato sin recargar la página.
+// Así siempre arranca de cero, aunque se vuelva a abrir el mismo plato sin recargar la página.
 function crearVisor(modelo) {
   zonaVisor.innerHTML = '';
   const v = document.createElement('model-viewer');
   v.id = 'm-visor';
   v.setAttribute('camera-controls', '');
   v.setAttribute('ar', '');
-  // webxr primero: abre la cámara dentro de Chrome (como modelviewer.dev); si no, Scene Viewer / Quick Look
-  v.setAttribute('ar-modes', 'webxr scene-viewer quick-look');
+  // scene-viewer primero (AR nativa de Google en Android); si no, webxr (cámara dentro de Chrome); en iPhone, Quick Look
+  v.setAttribute('ar-modes', 'scene-viewer webxr quick-look');
   v.setAttribute('ar-placement', 'floor');
   v.setAttribute('shadow-intensity', '1');
   v.setAttribute('alt', 'Vista 3D del plato');
-  v.innerHTML = '<button slot="ar-button" class="ar-btn" type="button">Ver en mi mesa</button>';
+  // Botón de AR propio del visor, invisible: usamos solo el botón "Ver en mi mesa" del index
+  v.innerHTML = '<button slot="ar-button" hidden></button>';
 
-  // El aviso aparece solo si falla la AR o si toca "Ver en mi mesa" en un celular no compatible
+  // Si la AR falla al intentar abrirla, también se muestra el aviso
   v.addEventListener('ar-status', function (e) {
     if (v === visor && e.detail.status === 'failed') mostrarAviso();
-  });
-  v.querySelector('.ar-btn').addEventListener('click', function () {
-    if (!v.canActivateAR) mostrarAviso();
   });
 
   zonaVisor.appendChild(v);
@@ -182,6 +197,8 @@ carta.addEventListener('click', function (e) {
   document.getElementById('m-precio').textContent = precio(plato.precio);
   ocultarAviso();
   visor = plato.modelo ? crearVisor(plato.modelo) : crearProximamente();
+  // El botón "Ver en mi mesa" aparece siempre que el plato tenga modelo 3D
+  botonAR.hidden = !plato.modelo;
   ultimoBoton = btn;
   modal.classList.add('abierto');
   modal.setAttribute('aria-hidden', 'false');

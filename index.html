@@ -56,6 +56,10 @@
     <div class="visor-caja">
       <!-- El visor 3D se crea desde funciones.js cada vez que se abre un plato -->
       <div id="m-zona"></div>
+
+      <!-- Botón propio: siempre está presente, no depende del visor 3D -->
+      <button class="ar-btn" id="m-ar" type="button" style="z-index:3">Ver en mi mesa</button>
+
       <!-- Aviso centrado: solo aparece al tocar "Ver en mi mesa" en un celular no compatible -->
       <div class="aviso" id="m-aviso" role="status" hidden>
         <button class="aviso-x" type="button" id="m-aviso-x" aria-label="Cerrar aviso">×</button>
@@ -64,8 +68,6 @@
         </svg>
         <strong>Tu celular no es compatible con la realidad aumentada</strong>
         <span>Igual podés girar el plato con el dedo.</span>
-      </div>
-
       </div>
     </div>
 
