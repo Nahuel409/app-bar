@@ -3,194 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Beto's Bar · Avellaneda, Santa Fe</title>
+<title>Beto's Reconquista · Carta</title>
+<link rel="icon" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
-<script type="importmap">
-{ "imports": {
-  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
-  "mindar-image-three": "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"
-} }
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<header class="top">
-  <a class="brand" href="#inicio" aria-label="Beto's Bar, inicio">
-    <span class="badge">Beto's<small>Bar</small></span>
-  </a>
-  <nav>
-    <a href="#menu">Menú</a>
-    <a href="#promos">Promos</a>
-    <a href="#delivery">Delivery</a>
-    <a href="#contacto">Contacto</a>
-  </nav>
-  <a class="btn btn-solid" href="https://wa.me/543482636292">Pedir por WhatsApp</a>
+<header class="cabecera">
+  <div class="banda"></div>
+  <div class="cab-in">
+    <img class="logo" src="logo.png" alt="Betos Reconquista, Burger & Pizza">
+    <div>
+      <h1>Betos Reconquista</h1>
+      <p class="lema">Tu lugar para comer rico y pasarla bien</p>
+      <ul class="datos">
+        <li>Martes a domingos</li>
+        <li>Roca 1323</li>
+        <li><a href="tel:+543482636340">3482 636340</a></li>
+      </ul>
+    </div>
+  </div>
 </header>
 
-<main>
-  <section class="hero" id="inicio">
-    <div class="hero-text">
-      <h1>Buena comida, buena mesa, en Avellaneda.</h1>
-      <p>Hamburguesas, pizzas y sándwiches para compartir en el bar o pedir en tu casa. Abierto de martes a domingos y feriados.</p>
-      <div class="actions">
-        <a class="btn btn-solid" href="#menu">Ver el menú</a>
-        <a class="btn btn-line" href="#delivery">Pedir delivery</a>
-      </div>
-    </div>
-    <div class="hero-logo" aria-hidden="true">
-      <div class="ring"><div class="disc">Beto's<small>Bar</small><i>Calle 14 N° 392</i></div></div>
-    </div>
-  </section>
-
-  <section class="promos" id="promos">
-    <h2>Promos de la semana</h2>
-    <div class="promo-row">
-      <article class="promo"><b>2x1 en pizzas</b><span>Martes y miércoles</span></article>
-      <article class="promo"><b>Combo hamburguesa + papas</b><span>Con bebida incluida</span></article>
-      <article class="promo"><b>Sándwich del día</b><span>Consultá el sabor</span></article>
-    </div>
-  </section>
-
-  <section class="menu" id="menu">
-    <h2>Nuestro menú</h2>
-    <p class="lead">Tocá “Ver plato” para mirar cada uno de cerca.</p>
-
-    <div class="cats">
-      <a href="#hamburguesas">Hamburguesas</a>
-      <a href="#pizzas">Pizzas</a>
-      <a href="#sandwiches">Sándwiches</a>
-    </div>
-
-    <div class="group" id="hamburguesas">
-      <h3>Hamburguesas</h3>
-      <ul class="dishes">
-        <li class="dish" data-name="Beto's Clásica" data-model="https://modelviewer.dev/shared-assets/models/Astronaut.glb" data-price="$8.500" data-emoji="🍔" data-desc="Medallón de carne, queso cheddar, lechuga, tomate y la salsa de la casa en pan de papa.">
-          <span class="thumb">🍔</span>
-          <div class="info"><b>Beto's Clásica</b><span>Carne, cheddar, lechuga y tomate</span></div>
-          <em class="price">$8.500</em>
-          <button class="btn btn-line btn-sm ver-plato" type="button">Ver plato</button>
-        </li>
-        <li class="dish" data-name="Doble Bacon" data-price="$10.900" data-emoji="🥓" data-desc="Doble medallón, panceta crocante, cheddar fundido y cebolla caramelizada.">
-          <span class="thumb">🥓</span>
-          <div class="info"><b>Doble Bacon</b><span>Doble carne, panceta y cebolla caramelizada</span></div>
-          <em class="price">$10.900</em>
-          <button class="btn btn-line btn-sm ver-plato" type="button">Ver plato</button>
-        </li>
-        <li class="dish" data-name="Papas con cheddar" data-price="$6.200" data-emoji="🍟" data-desc="Porción de papas fritas bañadas en cheddar y panceta, ideal para compartir.">
-          <span class="thumb">🍟</span>
-          <div class="info"><b>Papas con cheddar</b><span>Para compartir, con panceta</span></div>
-          <em class="price">$6.200</em>
-          <button class="btn btn-line btn-sm ver-plato" type="button">Ver plato</button>
-        </li>
-      </ul>
-    </div>
-
-    <div class="group" id="pizzas">
-      <h3>Pizzas</h3>
-      <ul class="dishes">
-        <li class="dish" data-name="Muzzarella" data-price="$7.800" data-emoji="🍕" data-desc="Masa a la piedra, salsa de tomate casera y abundante muzzarella.">
-          <span class="thumb">🍕</span>
-          <div class="info"><b>Muzzarella</b><span>Salsa casera y muzzarella</span></div>
-          <em class="price">$7.800</em>
-          <button class="btn btn-line btn-sm ver-plato" type="button">Ver plato</button>
-        </li>
-        <li class="dish" data-name="Napolitana" data-price="$8.900" data-emoji="🍅" data-desc="Muzzarella, rodajas de tomate fresco, ajo y orégano.">
-          <span class="thumb">🍅</span>
-          <div class="info"><b>Napolitana</b><span>Tomate fresco, ajo y orégano</span></div>
-          <em class="price">$8.900</em>
-          <button class="btn btn-line btn-sm ver-plato" type="button">Ver plato</button>
-        </li>
-        <li class="dish" data-name="Fugazzeta" data-price="$9.200" data-emoji="🧅" data-desc="Cebolla en abundancia sobre muzzarella, con un toque de aceite de oliva.">
-          <span class="thumb">🧅</span>
-          <div class="info"><b>Fugazzeta</b><span>Cebolla y doble muzzarella</span></div>
-          <em class="price">$9.200</em>
-          <button class="btn btn-line btn-sm ver-plato" type="button">Ver plato</button>
-        </li>
-      </ul>
-    </div>
-
-    <div class="group" id="sandwiches">
-      <h3>Sándwiches</h3>
-      <ul class="dishes">
-        <li class="dish" data-name="Lomito Completo" data-price="$9.800" data-emoji="🥪" data-desc="Lomo a la plancha, jamón, queso, huevo, lechuga y tomate en pan fresco.">
-          <span class="thumb">🥪</span>
-          <div class="info"><b>Lomito Completo</b><span>Lomo, jamón, queso y huevo</span></div>
-          <em class="price">$9.800</em>
-          <button class="btn btn-line btn-sm ver-plato" type="button">Ver plato</button>
-        </li>
-        <li class="dish" data-name="Milanesa al pan" data-price="$8.700" data-emoji="🥖" data-desc="Milanesa de carne, lechuga, tomate y mayonesa casera.">
-          <span class="thumb">🥖</span>
-          <div class="info"><b>Milanesa al pan</b><span>Lechuga, tomate y mayonesa</span></div>
-          <em class="price">$8.700</em>
-          <button class="btn btn-line btn-sm ver-plato" type="button">Ver plato</button>
-        </li>
-        <li class="dish" data-name="Tostado de jamón y queso" data-price="$5.400" data-emoji="🧀" data-desc="Pan de miga tostado con jamón cocido y queso derretido.">
-          <span class="thumb">🧀</span>
-          <div class="info"><b>Tostado de jamón y queso</b><span>Pan de miga, tostado al momento</span></div>
-          <em class="price">$5.400</em>
-          <button class="btn btn-line btn-sm ver-plato" type="button">Ver plato</button>
-        </li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="delivery" id="delivery">
-    <div>
-      <h2>Delivery a tu casa</h2>
-      <p>Pedinos por WhatsApp y te lo llevamos caliente en Avellaneda.</p>
-    </div>
-    <a class="btn btn-white" href="https://wa.me/543482636292">Pedir por WhatsApp</a>
-  </section>
-
-  <section class="contact" id="contacto">
-    <h2>Dónde encontrarnos</h2>
-    <div class="contact-grid">
-      <div><h4>Dirección</h4><p>Calle 14 N° 392<br>Avellaneda, Santa Fe</p></div>
-      <div><h4>Horarios</h4><p>Martes a domingos<br>y feriados</p></div>
-      <div><h4>Teléfonos</h4><p>Cel: 3482 636292<br>Fijo: 3482 482890</p></div>
-      <div><h4>Instagram</h4><p><a href="https://instagram.com/betos.bar.avda">@betos.bar.avda</a></p></div>
-    </div>
-  </section>
-</main>
-
-<footer>© Beto's Bar · Avellaneda, Santa Fe</footer>
-
-<div class="modal" id="modal" aria-hidden="true">
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="m-name">
-    <button class="close" type="button" id="m-close" aria-label="Cerrar">×</button>
-    <model-viewer id="m-viewer" hidden camera-controls ar
-      ar-modes="scene-viewer quick-look webxr" ar-placement="floor"
-      shadow-intensity="1" alt="Vista 3D del plato">
-      <button slot="ar-button" class="btn btn-solid ar-btn" type="button">Opción 1: ver en mi mesa</button>
-    </model-viewer>
-    <div class="opciones" id="m-opciones" hidden>
-      <p>Opción 1: tocá el botón sobre el plato para verlo en tu mesa.</p>
-      <p>Si no te funciona, probá la opción 2.</p>
-      <button class="btn btn-line" type="button" id="m-mind">Opción 2: ver con el cartel de la mesa</button>
-    </div>
-    <div class="stage" id="m-stage">
-      <span id="m-emoji">🍔</span>
-      <p>La vista en realidad aumentada va a estar disponible pronto.</p>
-    </div>
-    <h3 id="m-name"></h3>
-    <p id="m-desc"></p>
-    <div class="m-foot">
-      <strong id="m-price"></strong>
+<div class="barra">
+  <div class="barra-in">
+    <input id="buscar" type="search" placeholder="Buscar por productos" aria-label="Buscar por productos" autocomplete="off">
+    <div class="cats-wrap">
+      <button class="flecha izq" type="button" id="cats-izq" aria-label="Ver categorías anteriores" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <nav class="cats" id="cats" aria-label="Categorías"></nav>
+      <button class="flecha der" type="button" id="cats-der" aria-label="Ver más categorías" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
     </div>
   </div>
 </div>
 
-<div class="mind" id="mind" hidden>
-  <div class="mind-view" id="mind-view"></div>
-  <p class="mind-hint" id="mind-hint"></p>
-  <button class="close" type="button" id="mind-close" aria-label="Cerrar cámara">×</button>
+<main id="carta"></main>
+<p class="sin-res" id="sin-res" hidden>No encontramos productos con esa búsqueda.</p>
+
+<footer>Betos Reconquista · Roca 1323</footer>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="hoja" role="dialog" aria-modal="true" aria-labelledby="m-nombre">
+    <button class="cerrar" type="button" id="m-cerrar" aria-label="Cerrar">×</button>
+
+    <div class="aviso" id="m-aviso" role="alert" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3.5L2.5 20h19L12 3.5z"/><path d="M12 10v4.5"/><path d="M12 17.3h.01"/>
+      </svg>
+      <div>
+        <strong>Tu celular no es compatible con la realidad aumentada</strong>
+        <span>Igual podés girar el plato en 3D con el dedo.</span>
+      </div>
+    </div>
+
+    <!-- El visor 3D se crea desde funciones.js cada vez que se abre un plato -->
+    <div id="m-zona"></div>
+
+    <h3 id="m-nombre"></h3>
+    <p class="m-desc" id="m-desc"></p>
+    <strong class="m-precio" id="m-precio"></strong>
+  </div>
 </div>
 
+<script src="carta.js"></script>
 <script src="funciones.js"></script>
 </body>
 </html>
