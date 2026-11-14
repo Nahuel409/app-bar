@@ -43,7 +43,8 @@ const CARTA = [
     { nombre: 'Napolitana', desc: 'Salsa, muzzarella, tomate, ajo y orégano', precio: 13500 }
   ]},
   { id: 'hamburguesas', nombre: 'Hamburguesas con papas', icono: ICONOS.hamburguesa, platos: [
-    { nombre: 'Clásica', desc: 'Medallón de carne, lechuga, tomate y aderezo, con papas', precio: 11000 },
+    //{ nombre: 'Clásica', desc: 'Medallón de carne, lechuga, tomate y aderezo, con papas', precio: 11000 },
+    { nombre: 'Clásica', desc: 'Medallón de carne, lechuga, tomate y aderezo, con papas', precio: 11000, modelo: 'models/hamburguesac.glb' },
     { nombre: 'Cheddar y panceta', desc: 'Medallón, cheddar, panceta crocante y cebolla, con papas', precio: 13000 },
     { nombre: 'Betos Burger', desc: 'Doble medallón, doble cheddar, huevo y salsa de la casa, con papas', precio: 15500 }
   ]},

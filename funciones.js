@@ -158,8 +158,8 @@ function crearVisor(modelo) {
   v.id = 'm-visor';
   v.setAttribute('camera-controls', '');
   v.setAttribute('ar', '');
-  // scene-viewer primero (AR nativa de Google en Android); si no, webxr (cámara dentro de Chrome); en iPhone, Quick Look
-  v.setAttribute('ar-modes', 'scene-viewer webxr quick-look');
+  // webxr primero: abre la cámara dentro de Chrome (como modelviewer.dev); si no, Scene Viewer / Quick Look
+  v.setAttribute('ar-modes', 'webxr scene-viewer quick-look');
   v.setAttribute('ar-placement', 'floor');
   v.setAttribute('shadow-intensity', '1');
   v.setAttribute('alt', 'Vista 3D del plato');
