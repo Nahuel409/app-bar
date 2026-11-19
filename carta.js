@@ -11,6 +11,25 @@
 const MODELO_PRUEBA = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb';
 
 const ICONOS = {
+  pizzaSlice: '🍕',
+  pizzaEntera: '🍕',
+  hamburguesa: '🍔',
+  lomito:'<img src="models/lomito.png" style="width:28px;height:28px;object-fit:contain">'/*'🥩'*/,
+  empanada: '🥟',
+  papas: '🍟',
+  bebida: '🥤',
+  picada: '🧀',
+  sandwich: '🥪',
+  sinTac: '🌾',
+  triple: '🍔',
+  promo: '🏷️',
+  alPlato: '🍽️',
+  infantil: '🧸',
+  ensalada: '🥗'
+};
+
+/* 
+const ICONOS = {
   pizzaSlice: '<path d="M4.5 9.5Q16 3.5 27.5 9.5"/><path d="M4.5 9.5L16 28.5L27.5 9.5"/><path d="M6.9 13.5Q16 8.5 25.1 13.5"/><circle cx="13" cy="17" r="1.6"/><circle cx="19" cy="17" r="1.6"/><circle cx="16" cy="23" r="1.4"/>',
   pizzaEntera: '<circle cx="16" cy="16" r="12.5"/><circle cx="16" cy="16" r="9.3"/><path d="M16 6.7V25.3M6.7 16H25.3"/><circle cx="11.5" cy="11.5" r="1.2"/><circle cx="20.5" cy="11.5" r="1.2"/><circle cx="11.5" cy="20.5" r="1.2"/><circle cx="20.5" cy="20.5" r="1.2"/>',
   hamburguesa: '<path d="M5 14Q5 6 16 6Q27 6 27 14Z"/><path d="M12 10h.01M16.5 8.5h.01M20.5 10.5h.01"/><path d="M4.5 17q2.9 2.5 5.75 0t5.75 0t5.75 0t5.75 0"/><rect x="5" y="20.5" width="22" height="3.5" rx="1.75"/><path d="M5.5 26.5H26.5Q26.5 29 23.5 29H8.5Q5.5 29 5.5 26.5Z"/>',
@@ -26,24 +45,27 @@ const ICONOS = {
   alPlato: '<circle cx="16" cy="16" r="7.5"/><circle cx="16" cy="16" r="4.3"/><path d="M3.5 5V10Q3.5 12.5 5.5 12.5T7.5 10V5"/><path d="M5.5 12.5V27"/><path d="M26.5 27V5Q30 8 30 15H26.5"/>',
   infantil: '<circle cx="8.5" cy="8.5" r="3.5"/><circle cx="23.5" cy="8.5" r="3.5"/><circle cx="16" cy="17.5" r="9.5"/><circle cx="12.5" cy="15" r=".9" fill="currentColor"/><circle cx="19.5" cy="15" r=".9" fill="currentColor"/><ellipse cx="16" cy="20.5" rx="3.5" ry="2.6"/><path d="M14.9 19h2.2"/>',
   ensalada: '<path d="M4 16H28A12 10 0 0 1 4 16Z"/><path d="M11 15Q7.5 11 9 6.5Q14 8 11 15Z"/><path d="M16 15Q12.5 10 16 4.5Q19.5 10 16 15Z"/><path d="M21 15Q24.5 11 23 6.5Q18 8 21 15Z"/><path d="M12 29H20"/>'
-};
+}; */    // EL CLIENTE PREFIERE ICONOS ESTILO EMOJIS.
 
-const CARTA = [
-  { id: 'pizzas-masa-madre', nombre: 'Pizzas Masa Madre', icono: ICONOS.pizzaSlice, platos: [
-    { nombre: 'Italiana Muzza', desc: 'Masa madre, salsa, muzza, morrón, aceitunas, orégano', precio: 16000 },
-    { nombre: 'Italiana Especial', desc: 'Masa madre, salsa, muzza, paleta, huevo, rodaja de tomate, morrón, aceitunas, orégano', precio: 17500 },
+const CARTA = [ //'pizzas-masa-madre'
+    { id: 'pizzas-masa-madre', nombre: 'Pizzas', icono: ICONOS.pizzaSlice, platos: [
+    { nombre: 'Italiana Muzza', desc: 'Masa madre, salsa, muzza, morrón, aceitunas, orégano', precio: 16000, modelo: 'models/pizza1.glb' },
+    { nombre: 'Italiana Especial', desc: 'Masa madre, salsa, muzza, paleta, huevo, rodaja de tomate, morrón, aceitunas, orégano', precio: 17500, modelo: 'models/pizzachica.glb' },
     { nombre: 'Italiana Fugazza', desc: 'Masa madre, salsa, muzza, cebolla salteada, morrón, aceitunas, orégano', precio: 17000 },
     { nombre: 'Italiana Rúcula', desc: 'Masa madre, salsa, muzza, rúcula, queso parmesano, aceitunas negras, aceite de oliva, orégano', precio: 17000 },
     { nombre: 'Italiana Roquefort', desc: 'Masa madre, salsa, muzza, queso azul, morrón, aceitunas, orégano', precio: 16000 },
     { nombre: 'Italiana Betos', desc: 'Masa madre, salsa, muzza, panceta, huevo, morrón, aceitunas, orégano', precio: 16000 },
-    { nombre: 'Italiana Pepperoni', desc: 'Masa madre, salsa, muzza, pepperoni, orégano', precio: 16000 }
-  ]},
-  { id: 'pizza-casera', nombre: 'Pizza Casera', icono: ICONOS.pizzaEntera, platos: [
-    { nombre: 'Muzzarella', desc: 'Salsa, muzzarella y aceitunas', precio: 12000 },
+    { nombre: 'Italiana Pepperoni', desc: 'Masa madre, salsa, muzza, pepperoni, orégano', precio: 16000 },
+    { nombre: 'Muzzarella', desc: 'Salsa, muzzarella y aceitunas', precio: 12000, modelo: 'models/pizzacasera.glb' },
     { nombre: 'Napolitana', desc: 'Salsa, muzzarella, tomate, ajo y orégano', precio: 13500 }
   ]},
+  /*{ id: 'pizza-casera', nombre: 'Pizza Casera', icono: ICONOS.pizzaEntera, platos: [
+    //{ nombre: 'Muzzarella', desc: 'Salsa, muzzarella y aceitunas', precio: 12000 },
+    { nombre: 'Muzzarella', desc: 'Salsa, muzzarella y aceitunas', precio: 12000, modelo: 'models/pizzacasera.glb' },
+    { nombre: 'Napolitana', desc: 'Salsa, muzzarella, tomate, ajo y orégano', precio: 13500 }
+  ]},*/
   { id: 'hamburguesas', nombre: 'Hamburguesas con papas', icono: ICONOS.hamburguesa, platos: [
-    //{ nombre: 'Clásica', desc: 'Medallón de carne, lechuga, tomate y aderezo, con papas', precio: 11000 },
+    { nombre: 'Clásica New Model', desc: 'Medallón de carne, lechuga, tomate y aderezo, con papas', precio: 13000, modelo: 'models/hambypapas.glb' },
     { nombre: 'Clásica', desc: 'Medallón de carne, lechuga, tomate y aderezo, con papas', precio: 11000, modelo: 'models/hamburguesac.glb' },
     { nombre: 'Cheddar y panceta', desc: 'Medallón, cheddar, panceta crocante y cebolla, con papas', precio: 13000 },
     { nombre: 'Betos Burger', desc: 'Doble medallón, doble cheddar, huevo y salsa de la casa, con papas', precio: 15500 }
@@ -79,7 +101,7 @@ const CARTA = [
     { nombre: 'Pizza muzza sin TAC', desc: 'Salsa y muzzarella', precio: 14000 },
     { nombre: 'Hamburguesa sin TAC', desc: 'Con pan sin TAC y papas', precio: 13500 }
   ]},
-  { id: 'simples-triples', nombre: 'Simples y Triples', icono: ICONOS.triple, platos: [
+  { id: 'simples-triples', nombre: 'Simples y Triples', icono: ICONOS.sandwich, platos: [
     { nombre: 'Simple', desc: 'Un medallón, cheddar y aderezo', precio: 9000 },
     { nombre: 'Doble', desc: 'Dos medallones, doble cheddar y aderezo', precio: 12000 },
     { nombre: 'Triple', desc: 'Tres medallones, triple cheddar y aderezo', precio: 15000 }

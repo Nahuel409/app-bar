@@ -27,9 +27,10 @@ CARTA.forEach(function (cat, c) {
   const link = document.createElement('a');
   link.href = '#' + cat.id;
   link.dataset.id = cat.id;
-  link.innerHTML =
-    '<span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true">' + cat.icono + '</svg></span>' +
-    '<span>' + cat.nombre + '</span>';
+  link.innerHTML = '<span class="ico">' + cat.icono + '</span><span>' + cat.nombre + '</span>'; //CLIENTE PREFIERE ICONOS
+  //link.innerHTML =
+  //  '<span class="ico"><svg viewBox="0 0 32 32" aria-hidden="true">' + cat.icono + '</svg></span>' +
+   // '<span>' + cat.nombre + '</span>';
   cats.appendChild(link);
 
   const sec = document.createElement('section');

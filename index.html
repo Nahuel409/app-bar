@@ -7,7 +7,7 @@
 <link rel="icon" href="models/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -54,6 +54,12 @@
     <button class="cerrar" type="button" id="m-cerrar" aria-label="Cerrar">×</button>
 
     <div class="visor-caja">
+      <!-- Fondo fijo: crema desenfocado con las letras Beto's bar (queda detrás del plato 3D) -->
+      <div class="visor-fondo" aria-hidden="true">
+        <span class="letras-betos">BETO’S</span>
+        <span class="letras-bar">bar</span>
+      </div>
+
       <!-- El visor 3D se crea desde funciones.js cada vez que se abre un plato -->
       <div id="m-zona"></div>
 
