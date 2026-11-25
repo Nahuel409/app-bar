@@ -3,27 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Betos Reconquista · Carta</title>
-<link rel="icon" href="models/logo.png">
+<title>Carta</title>
+<link id="favicon" rel="icon" href="assets/img/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
-<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
-<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
 <header class="cabecera">
   <div class="banda"></div>
   <div class="cab-in">
-    <img class="logo" src="models/logo.png" alt="Betos Reconquista, Burger & Pizza">
+    <img class="logo" id="logo" src="assets/img/logo.png" alt="">
     <div>
-      <h1>Betos Reconquista</h1>
-      <p class="lema">Tu lugar para comer rico y pasarla bien</p>
+      <h1 id="negocio-nombre"></h1>
+      <p class="lema" id="negocio-lema"></p>
       <ul class="datos">
-        <li>Martes a domingos</li>
-        <li>Roca 1323</li>
-        <li><a href="https://wa.me/5493482636340" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li id="negocio-dias"></li>
+        <li id="negocio-dir"></li>
+        <li><a id="negocio-wsp" href="#" target="_blank" rel="noopener">WhatsApp</a></li>
       </ul>
     </div>
   </div>
@@ -47,34 +46,15 @@
 <main id="carta"></main>
 <p class="sin-res" id="sin-res" hidden>No encontramos productos con esa búsqueda.</p>
 
-<footer>Betos Reconquista · Roca 1323</footer>
+<footer id="pie"></footer>
 
 <div class="modal" id="modal" aria-hidden="true">
   <div class="hoja" role="dialog" aria-modal="true" aria-labelledby="m-nombre">
     <button class="cerrar" type="button" id="m-cerrar" aria-label="Cerrar">×</button>
 
-    <div class="visor-caja">
-      <!-- Fondo fijo: crema desenfocado con las letras Beto's bar (queda detrás del plato 3D) -->
-      <div class="visor-fondo" aria-hidden="true">
-        <span class="letras-betos">BETO’S</span>
-        <span class="letras-bar">bar</span>
-      </div>
-
-      <!-- El visor 3D se crea desde funciones.js cada vez que se abre un plato -->
+    <!-- Acá se muestra el video del plato (se arma desde funciones.js) -->
+    <div class="media-caja">
       <div id="m-zona"></div>
-
-      <!-- Botón propio: siempre está presente, no depende del visor 3D -->
-      <button class="ar-btn" id="m-ar" type="button" style="z-index:3">Ver en mi mesa</button>
-
-      <!-- Aviso centrado: solo aparece al tocar "Ver en mi mesa" en un celular no compatible -->
-      <div class="aviso" id="m-aviso" role="status" hidden>
-        <button class="aviso-x" type="button" id="m-aviso-x" aria-label="Cerrar aviso">×</button>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 3.5L2.5 20h19L12 3.5z"/><path d="M12 10v4.5"/><path d="M12 17.3h.01"/>
-        </svg>
-        <strong>Tu celular no es compatible con la realidad aumentada</strong>
-        <span>Igual podés girar el plato con el dedo.</span>
-      </div>
     </div>
 
     <div class="m-info">
@@ -87,7 +67,7 @@
   </div>
 </div>
 
-<script src="carta.js"></script>
-<script src="funciones.js"></script>
+<script src="js/carta.js"></script>
+<script src="js/funciones.js"></script>
 </body>
 </html>
