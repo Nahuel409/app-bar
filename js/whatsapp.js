@@ -1,0 +1,29 @@
+// Armado y envío del pedido por WhatsApp.
+// Depende de: NEGOCIO (carta.js), MESA (mesa.js), lineasDetalle() (carrito.js) y precio() (funciones.js).
+// Los ítems tienen la forma de Carrito (o de obtenerSeleccion() + "cantidad").
+// El precio aparece solo en el total.
+
+function armarMensaje(items, mesa) {
+  const L = [];
+  L.push('*Pedido · ' + NEGOCIO.nombre + '*');
+  L.push(mesa ? 'Mesa: ' + mesa : 'Mesa: sin indicar');
+  L.push('');
+
+  let total = 0;
+  items.forEach(function (it) {
+    const cant = it.cantidad || 1;
+    total += it.precio * cant;
+    L.push(cant + 'x *' + it.nombre + '* (' + it.categoria + ')');
+    lineasDetalle(it).forEach(function (d) { L.push('   - ' + d); });
+    L.push('');
+  });
+
+  L.push('*Total: ' + precio(total) + '*');
+  return L.join('\n');
+}
+
+function enviarWhatsApp(items) {
+  const url = 'https://wa.me/' + NEGOCIO.whatsapp + '?text=' + encodeURIComponent(armarMensaje(items, MESA));
+  const w = window.open(url, '_blank');
+  if (!w) window.location.href = url; // si el navegador bloquea la pestaña nueva
+}

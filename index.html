@@ -22,6 +22,7 @@
       <ul class="datos">
         <li id="negocio-dias"></li>
         <li id="negocio-dir"></li>
+        <li class="mesa" id="negocio-mesa" hidden></li>
         <li><a id="negocio-wsp" href="#" target="_blank" rel="noopener">WhatsApp</a></li>
       </ul>
     </div>
@@ -58,6 +59,7 @@
     </div>
 
     <div class="m-info">
+      <p class="m-cat" id="m-cat"></p>
       <div class="m-fila">
         <h3 id="m-nombre"></h3>
         <strong class="m-precio" id="m-precio"></strong>
@@ -67,10 +69,48 @@
 
     <!-- Opciones del plato: tamaño/cantidad, elecciones, cambios y "Sin…" (se arma desde funciones.js) -->
     <div class="m-opc" id="m-opciones" hidden></div>
+
+    <!-- Barra de acciones: queda fija abajo del modal aunque haya muchas opciones -->
+    <div class="m-acciones">
+      <p class="m-error" id="m-error" role="alert" hidden></p>
+      <div class="m-botones">
+        <button type="button" class="btn-agregar" id="m-agregar">Agregar al carrito</button>
+        <button type="button" class="btn-pedir" id="m-pedir">Pedir ahora</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Botón del carrito: fijo abajo y centrado -->
+<button type="button" class="cart-fab" id="cart-fab" aria-label="Ver mi pedido">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2.4l2.3 10.6h10.1l2-7.6H6.1"/><circle cx="9" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg>
+  <span class="cart-burbuja" id="cart-burbuja" hidden>0</span>
+</button>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<!-- Panel del pedido -->
+<div class="modal" id="carrito" aria-hidden="true">
+  <div class="hoja" role="dialog" aria-modal="true" aria-labelledby="c-titulo">
+    <button class="cerrar" type="button" id="c-cerrar" aria-label="Cerrar">×</button>
+    <div class="c-cab">
+      <h3 id="c-titulo">Tu pedido</h3>
+      <span class="c-mesa" id="c-mesa" hidden></span>
+    </div>
+    <p class="c-vacio" id="c-vacio">Todavía no agregaste nada. Elegí un plato de la carta y tocá “Agregar al Carrito”.</p>
+    <ul class="c-lista" id="c-lista"></ul>
+    <div class="m-acciones" id="c-pie" hidden>
+      <div class="c-total"><span>Total</span><strong id="c-total"></strong></div>
+      <button type="button" class="btn-pedir" id="c-enviar">Enviar pedido por WhatsApp</button>
+      <button type="button" class="c-vaciar" id="c-vaciar">Vaciar pedido</button>
+    </div>
   </div>
 </div>
 
 <script src="js/carta.js"></script>
+<script src="js/mesa.js"></script>
+<script src="js/carrito.js"></script>
+<script src="js/whatsapp.js"></script>
 <script src="js/funciones.js"></script>
+<script src="js/carrito-ui.js"></script>
 </body>
 </html>

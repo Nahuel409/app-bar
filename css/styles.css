@@ -28,6 +28,7 @@ h1{font:800 clamp(1.9rem,5vw,2.8rem)/1 var(--titulos);letter-spacing:.01em}
 .datos{display:flex;flex-wrap:wrap;gap:.4rem .6rem;list-style:none}
 .datos li{padding:.15rem .85rem;border:1px solid var(--borde);border-radius:999px;font-size:.88rem;font-weight:500;background:#fff}
 .datos li a{display:block}
+.datos li.mesa{background:var(--naranja);border-color:var(--naranja);color:#fff;font-weight:700}
 
 /* Barra de búsqueda y categorías */
 .barra{position:sticky;top:0;z-index:10;background:var(--fondo);border-bottom:1px solid var(--borde)}
@@ -66,7 +67,7 @@ main{max-width:1200px;margin:0 auto;padding:1rem 1.2rem 3rem}
 .ver{font:600 1rem var(--texto);padding:.6rem 1.7rem;color:#fff;background:var(--rojo);border:0;border-radius:999px;cursor:pointer;transition:.2s}
 .ver:hover{background:var(--rojo-osc)}
 .sin-res{text-align:center;color:var(--gris);padding:3rem 1rem}
-footer{text-align:center;padding:1.6rem 1rem;color:var(--gris);font-size:.88rem;border-top:1px solid var(--borde)}
+footer{text-align:center;padding:1.6rem 1rem 6.5rem;color:var(--gris);font-size:.88rem;border-top:1px solid var(--borde)}
 
 /* Ver plato */
 .modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:.6rem;background:rgba(42,28,18,.6);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
@@ -109,6 +110,52 @@ footer{text-align:center;padding:1.6rem 1rem;color:var(--gris);font-size:.88rem;
 .hoja h3{font:800 1.4rem/1.1 var(--titulos);text-transform:uppercase;letter-spacing:.02em}
 .m-precio{flex:0 0 auto;font-size:1.2rem;color:var(--rojo-osc)}
 .m-desc{color:var(--gris);font-size:.85rem;line-height:1.3;margin-top:.2rem}
+
+/* Categoría sobre el nombre del plato (hay platos con el mismo nombre en distintas categorías) */
+.m-cat{font:600 .72rem var(--texto);text-transform:uppercase;letter-spacing:.07em;color:var(--naranja-osc);margin-bottom:.1rem}
+
+/* Barra de acciones fija abajo del modal */
+.m-acciones{position:sticky;bottom:0;z-index:4;margin:.4rem -.55rem -.55rem;padding:.7rem .9rem .9rem;background:#fff;border-top:1px solid var(--borde)}
+.btn-pedir{display:block;width:100%;padding:.8rem .8rem;font:700 1rem var(--texto);color:#fff;background:var(--rojo);border:0;border-radius:999px;cursor:pointer;transition:.2s}
+.btn-pedir:hover{background:var(--rojo-osc)}
+.m-botones{display:flex;gap:.5rem}
+.m-botones button{flex:1}
+.btn-agregar{padding:.8rem .8rem;font:700 1rem var(--texto);color:var(--rojo-osc);background:#fff;border:2px solid var(--rojo);border-radius:999px;cursor:pointer;transition:.2s}
+.btn-agregar:hover{background:#fde8e8}
+.m-error{margin-bottom:.55rem;padding:.45rem .8rem;border-radius:10px;background:#fde8e8;color:var(--rojo-osc);font-size:.85rem;font-weight:600;text-align:center}
+.opc-grupo.falta{padding:.5rem;margin-left:-.5rem;margin-right:-.5rem;border-radius:12px;background:#fff1f1;outline:1.5px solid var(--rojo)}
+.opc-grupo.falta .opc-titulo{color:var(--rojo-osc)}
+
+/* Botón fijo del carrito (abajo, centrado) */
+.cart-fab{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:20;width:64px;height:64px;display:grid;place-items:center;border:0;border-radius:50%;background:var(--rojo);box-shadow:0 4px 14px rgba(42,28,18,.4);cursor:pointer;transition:background .2s}
+.cart-fab:hover{background:var(--rojo-osc)}
+.cart-fab svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cart-burbuja{position:absolute;top:-4px;right:-6px;min-width:26px;height:26px;padding:0 6px;display:grid;place-items:center;border-radius:999px;background:var(--naranja);border:2px solid #fff;color:#fff;font:700 .8rem var(--texto)}
+.cart-fab.rebote{animation:rebote .5s ease-out}
+@keyframes rebote{0%{transform:translateX(-50%) scale(1)}35%{transform:translateX(-50%) scale(1.22)}70%{transform:translateX(-50%) scale(.95)}100%{transform:translateX(-50%) scale(1)}}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:21;max-width:calc(100% - 2rem);padding:.6rem 1.1rem;border-radius:999px;background:var(--marron);color:#fff;font-size:.9rem;font-weight:600;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+
+/* Panel del pedido */
+.c-cab{display:flex;align-items:center;gap:.6rem;padding:.9rem 3rem .3rem .5rem}
+.c-mesa{padding:.1rem .7rem;border-radius:999px;background:var(--naranja);color:#fff;font-size:.8rem;font-weight:700}
+.c-vacio{padding:1.2rem .6rem 1.6rem;color:var(--gris);text-align:center}
+.c-lista{list-style:none;padding:0 .4rem}
+.c-item{display:flex;justify-content:space-between;gap:.8rem;padding:.85rem 0;border-bottom:1px solid var(--borde)}
+.c-info{min-width:0}
+.c-info strong{display:block;font:700 1.1rem var(--titulos);text-transform:uppercase;letter-spacing:.02em}
+.c-cat{display:block;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--naranja-osc)}
+.c-det{list-style:none;margin-top:.25rem;color:var(--gris);font-size:.82rem;line-height:1.3}
+.c-der{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:.5rem}
+.c-precio{font-weight:700;color:var(--rojo-osc)}
+.c-cant{display:flex;align-items:center;border:1.5px solid var(--borde);border-radius:999px;background:#fff}
+.c-btn{width:36px;height:36px;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;cursor:pointer}
+.c-btn:hover{background:var(--crema)}
+.c-btn svg{width:18px;height:18px;fill:none;stroke:var(--marron);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.c-borrar svg{stroke:var(--rojo-osc);stroke-width:2}
+.c-n{min-width:26px;text-align:center;font-weight:700}
+.c-total{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.6rem;font-size:1.25rem}
+.c-total strong{color:var(--rojo-osc)}
+.c-vaciar{display:block;margin:.6rem auto 0;padding:.3rem .6rem;border:0;background:none;color:var(--gris);font:600 .85rem var(--texto);text-decoration:underline;cursor:pointer}
 
 /* Opciones del plato */
 .m-opc{padding:.3rem .35rem .6rem}

@@ -29,6 +29,11 @@ document.getElementById('negocio-nombre').textContent = NEGOCIO.nombre;
 document.getElementById('negocio-lema').textContent = NEGOCIO.lema;
 document.getElementById('negocio-dias').textContent = NEGOCIO.dias;
 document.getElementById('negocio-dir').textContent = NEGOCIO.direccion;
+if (MESA) {
+  const liMesa = document.getElementById('negocio-mesa');
+  liMesa.textContent = 'Mesa ' + MESA;
+  liMesa.hidden = false;
+}
 document.getElementById('negocio-wsp').href = 'https://wa.me/' + NEGOCIO.whatsapp;
 document.getElementById('pie').textContent = NEGOCIO.nombre + ' · ' + NEGOCIO.direccion;
 
@@ -238,6 +243,8 @@ function mostrarMedia(plato) {
 // Regla del local: NO se agregan ingredientes, solo se sacan o se cambian. El precio solo cambia por la variante.
 const contOpc = document.getElementById('m-opciones');
 const precioModal = document.getElementById('m-precio');
+const errorPedido = document.getElementById('m-error');
+const btnPedir = document.getElementById('m-pedir');
 let platoActual = null;
 let sel = null; // selección actual del cliente
 
@@ -249,7 +256,7 @@ function chip(tipo, nombreInput, valor, texto, extra) {
   return '<label class="chip ' + (extra || '') + '"><input type="' + tipo + '" name="' + nombreInput + '" value="' + valor + '"><span>' + texto + '</span></label>';
 }
 function grupo(titulo, obligatorio, chips) {
-  return '<div class="opc-grupo"><div class="opc-titulo">' + titulo +
+  return '<div class="opc-grupo"' + (obligatorio ? ' data-obl="1"' : '') + '><div class="opc-titulo">' + titulo +
     (obligatorio ? ' <em>Obligatorio</em>' : '') + '</div><div class="chips">' + chips + '</div></div>';
 }
 
@@ -299,6 +306,8 @@ function sincronizarOpciones() {
 
 contOpc.addEventListener('change', function (e) {
   const t = e.target;
+  t.closest('.opc-grupo').classList.remove('falta');
+  if (!contOpc.querySelector('.opc-grupo.falta')) errorPedido.hidden = true;
   const i = Number(t.value);
   if (t.name === 'o-var') sel.variante = i;
   else if (t.name.indexOf('o-el-') === 0) sel.elegidas[t.name.slice(5)] = i;
@@ -328,6 +337,8 @@ function obtenerSeleccion() {
   return {
     id: p.id,
     nombre: p.nombre,
+    categoria: p.categoriaNombre,
+    varTitulo: p.varTitulo || 'Opción',
     variante: v ? v.nombre : null,
     precio: v ? v.precio : p.precio,
     elegidas: elegidas,
@@ -336,6 +347,45 @@ function obtenerSeleccion() {
     faltan: faltan
   };
 }
+
+// Marca lo que falta elegir y lleva al cliente hasta ahí
+function mostrarFaltantes(faltan) {
+  let primero = null;
+  contOpc.querySelectorAll('.opc-grupo[data-obl]').forEach(function (g) {
+    if (!g.querySelector('input:checked')) {
+      g.classList.add('falta');
+      if (!primero) primero = g;
+    }
+  });
+  errorPedido.textContent = 'Te falta elegir: ' + faltan.join(', ') + '.';
+  errorPedido.hidden = false;
+  if (primero) primero.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// Devuelve la selección si está completa; si falta algo, lo marca y devuelve null
+function seleccionCompleta() {
+  if (!platoActual) return null;
+  const s = obtenerSeleccion();
+  if (s.faltan.length) { mostrarFaltantes(s.faltan); return null; }
+  return s;
+}
+
+// Pedir ahora: manda solo este plato por WhatsApp
+btnPedir.addEventListener('click', function () {
+  const s = seleccionCompleta();
+  if (!s) return;
+  s.cantidad = 1;
+  enviarWhatsApp([s]);
+});
+
+// Agregar al pedido: suma el plato al carrito, cierra el modal y avisa
+document.getElementById('m-agregar').addEventListener('click', function () {
+  const s = seleccionCompleta();
+  if (!s) return;
+  Carrito.agregar(s);
+  cerrarModal();
+  avisarAgregado(s.nombre);
+});
 
 // Ver plato
 carta.addEventListener('click', function (e) {
@@ -348,6 +398,8 @@ carta.addEventListener('click', function (e) {
   document.getElementById('m-desc').textContent = plato.desc;
   platoActual = plato;
   sel = nuevaSeleccion();
+  errorPedido.hidden = true;
+  document.getElementById('m-cat').textContent = plato.categoriaNombre;
   dibujarOpciones(plato);
   actualizarPrecio();
   mostrarMedia(plato);

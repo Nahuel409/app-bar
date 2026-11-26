@@ -10,7 +10,7 @@ const NEGOCIO = {
   lema: 'Tu lugar para comer rico y pasarla bien',
   dias: 'Martes a domingos',
   direccion: 'Roca 1323',
-  whatsapp: '5493482270495', //'5493482636340',          // sin + ni espacios
+  whatsapp: '3482270495', //'5493482636340',          // sin + ni espacios
   logo: 'assets/img/logo.png'
 };
 
@@ -168,6 +168,7 @@ CARTA.forEach(function (cat) {
     p.id = p.id || (cat.id + '-' + slug);
     if (PLATOS[p.id]) console.warn('ID de plato repetido: ' + p.id);
     p.categoria = cat.id;
+    p.categoriaNombre = cat.nombre; // varios platos se llaman igual en distintas categorías (ej: "Premium")
     p.video = p.video || null;
     p.img = p.img || null;
     p.quitar = p.quitar || [];
