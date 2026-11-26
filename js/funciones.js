@@ -16,7 +16,7 @@ const precio = function (n) {
   return '$' + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 const limpio = function (s) {
-  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/['’]/g, '').toLowerCase();
 };
 
 // Datos del local (cabecera, título, pie): todo sale de NEGOCIO en carta.js
@@ -58,7 +58,7 @@ CARTA.forEach(function (cat) {
         (p.video ? '<span class="play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5L19 12L8 18.5Z"/></svg></span>' : '') +
       '</div>' +
       '<h3>' + p.nombre + '</h3><p>' + p.desc + '</p>' +
-      '<div class="pie"><span class="precio">' + precio(p.precio) + '</span>' +
+      '<div class="pie"><span class="precio">' + (p.variantes ? '<small>Desde</small> ' : '') + precio(p.precio) + '</span>' +
       '<button type="button" class="ver" data-id="' + p.id + '">Ver plato</button>' +
       '</div>';
     grilla.appendChild(card);
@@ -234,6 +234,109 @@ function mostrarMedia(plato) {
   if (r && typeof r.catch === 'function') r.catch(function () {});
 }
 
+// ---------- Opciones del plato (tamaño, elecciones, cambios y "Sin…") ----------
+// Regla del local: NO se agregan ingredientes, solo se sacan o se cambian. El precio solo cambia por la variante.
+const contOpc = document.getElementById('m-opciones');
+const precioModal = document.getElementById('m-precio');
+let platoActual = null;
+let sel = null; // selección actual del cliente
+
+function nuevaSeleccion() {
+  return { variante: null, elegidas: {}, cambios: [], quitar: [] };
+}
+
+function chip(tipo, nombreInput, valor, texto, extra) {
+  return '<label class="chip ' + (extra || '') + '"><input type="' + tipo + '" name="' + nombreInput + '" value="' + valor + '"><span>' + texto + '</span></label>';
+}
+function grupo(titulo, obligatorio, chips) {
+  return '<div class="opc-grupo"><div class="opc-titulo">' + titulo +
+    (obligatorio ? ' <em>Obligatorio</em>' : '') + '</div><div class="chips">' + chips + '</div></div>';
+}
+
+function dibujarOpciones(plato) {
+  let h = '';
+  if (plato.variantes) {
+    h += grupo(plato.varTitulo || 'Elegí una opción', true, plato.variantes.map(function (v, i) {
+      return chip('radio', 'o-var', i, v.nombre + ' · <b>' + precio(v.precio) + '</b>');
+    }).join(''));
+  }
+  plato.elegir.forEach(function (g, gi) {
+    h += grupo(g.titulo, true, g.opciones.map(function (o, oi) {
+      return chip('radio', 'o-el-' + gi, oi, o);
+    }).join(''));
+  });
+  if (plato.cambios.length) {
+    h += grupo('Cambios', false, plato.cambios.map(function (c, i) {
+      return chip('checkbox', 'o-cambio', i, 'Cambiar ' + c.de + ' por ' + c.por);
+    }).join(''));
+  }
+  if (plato.quitar.length) {
+    h += grupo('¿Querés sacar algo?', false, plato.quitar.map(function (q, i) {
+      return chip('checkbox', 'o-sin', i, 'Sin ' + q, 'sin');
+    }).join(''));
+  }
+  contOpc.innerHTML = h;
+  contOpc.hidden = !h;
+}
+
+function actualizarPrecio() {
+  const v = sel.variante === null ? null : platoActual.variantes[sel.variante];
+  precioModal.textContent = v ? precio(v.precio) : (platoActual.variantes ? 'Desde ' : '') + precio(platoActual.precio);
+}
+
+// Un ingrediente no puede estar a la vez "cambiado" y "sacado": se bloquea el opuesto
+function sincronizarOpciones() {
+  platoActual.cambios.forEach(function (c, ci) {
+    const cc = contOpc.querySelector('input[name="o-cambio"][value="' + ci + '"]');
+    platoActual.quitar.forEach(function (q, qi) {
+      if (q.toLowerCase() !== c.de.toLowerCase()) return;
+      const cq = contOpc.querySelector('input[name="o-sin"][value="' + qi + '"]');
+      cq.disabled = cc.checked;
+      cc.disabled = cq.checked;
+    });
+  });
+}
+
+contOpc.addEventListener('change', function (e) {
+  const t = e.target;
+  const i = Number(t.value);
+  if (t.name === 'o-var') sel.variante = i;
+  else if (t.name.indexOf('o-el-') === 0) sel.elegidas[t.name.slice(5)] = i;
+  else if (t.name === 'o-cambio' || t.name === 'o-sin') {
+    const lista = t.name === 'o-cambio' ? sel.cambios : sel.quitar;
+    const pos = lista.indexOf(i);
+    if (t.checked && pos === -1) lista.push(i);
+    if (!t.checked && pos !== -1) lista.splice(pos, 1);
+    sincronizarOpciones();
+  }
+  actualizarPrecio();
+});
+
+// Devuelve lo que eligió el cliente, listo para el pedido (lo usan "Pedir ahora" y el carrito).
+// "faltan" lista las elecciones obligatorias sin responder.
+function obtenerSeleccion() {
+  const p = platoActual;
+  const v = sel.variante === null ? null : p.variantes[sel.variante];
+  const faltan = [];
+  if (p.variantes && !v) faltan.push(p.varTitulo || 'Elegí una opción');
+  const elegidas = [];
+  p.elegir.forEach(function (g, gi) {
+    const o = sel.elegidas[gi];
+    if (o === undefined) faltan.push(g.titulo);
+    else elegidas.push({ titulo: g.titulo, opcion: g.opciones[o] });
+  });
+  return {
+    id: p.id,
+    nombre: p.nombre,
+    variante: v ? v.nombre : null,
+    precio: v ? v.precio : p.precio,
+    elegidas: elegidas,
+    cambios: sel.cambios.map(function (i) { return p.cambios[i].de + ' → ' + p.cambios[i].por; }),
+    quitar: sel.quitar.map(function (i) { return p.quitar[i]; }),
+    faltan: faltan
+  };
+}
+
 // Ver plato
 carta.addEventListener('click', function (e) {
   const clic = e.target.closest('.ver, .foto');
@@ -243,8 +346,12 @@ carta.addEventListener('click', function (e) {
   if (!plato) return;
   document.getElementById('m-nombre').textContent = plato.nombre;
   document.getElementById('m-desc').textContent = plato.desc;
-  document.getElementById('m-precio').textContent = precio(plato.precio);
+  platoActual = plato;
+  sel = nuevaSeleccion();
+  dibujarOpciones(plato);
+  actualizarPrecio();
   mostrarMedia(plato);
+  document.querySelector('.hoja').scrollTop = 0;
   ultimoBoton = btn;
   modal.classList.add('abierto');
   modal.setAttribute('aria-hidden', 'false');
