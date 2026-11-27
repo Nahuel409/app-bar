@@ -27,15 +27,18 @@ function pintarPanel() {
   cPie.hidden = items.length === 0;
   cLista.innerHTML = items.map(function (it, i) {
     const det = lineasDetalle(it).map(function (d) { return '<li>' + d + '</li>'; }).join('');
+    const pl = PLATOS[it.id];
+    const editable = pl && (pl.variantes || pl.elegir.length || pl.cambios.length || pl.quitar.length);
     const menos = it.cantidad === 1
       ? '<button type="button" class="c-btn c-borrar" data-i="' + i + '" data-d="-1" aria-label="Quitar ' + it.nombre + '"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 7V4h4v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button>'
       : '<button type="button" class="c-btn" data-i="' + i + '" data-d="-1" aria-label="Menos ' + it.nombre + '"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>';
     return '<li class="c-item">' +
       '<div class="c-info"><strong>' + it.nombre + '</strong><span class="c-cat">' + it.categoria + '</span>' +
-        (det ? '<ul class="c-det">' + det + '</ul>' : '') + '</div>' +
+        (det ? '<ul class="c-det">' + det + '</ul>' : '') +
+        (editable ? '<button type="button" class="c-editar" data-i="' + i + '">Editar</button>' : '') + '</div>' +
       '<div class="c-der"><span class="c-precio">' + precio(it.precio * it.cantidad) + '</span>' +
         '<div class="c-cant">' + menos + '<span class="c-n">' + it.cantidad + '</span>' +
-        '<button type="button" class="c-btn" data-i="' + i + '" data-d="1" aria-label="Más ' + it.nombre + '"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></svg></button>' +
+        '<button type="button" class="c-btn" data-i="' + i + '" data-d="1"' + (it.cantidad >= Carrito.MAX ? ' disabled' : '') + ' aria-label="Más ' + it.nombre + '"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></svg></button>' +
         '</div></div></li>';
   }).join('');
   cTotal.textContent = precio(Carrito.total());
@@ -67,6 +70,13 @@ document.addEventListener('keydown', function (e) {
 
 // + y − (con 1 unidad el − elimina el producto)
 cLista.addEventListener('click', function (e) {
+  const ed = e.target.closest('.c-editar');
+  if (ed) {
+    const i = Number(ed.dataset.i);
+    cerrarCarrito();
+    editarPlato(Carrito.lista()[i], i);
+    return;
+  }
   const b = e.target.closest('.c-btn');
   if (!b) return;
   Carrito.cambiarCantidad(Number(b.dataset.i), Number(b.dataset.d));

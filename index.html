@@ -29,9 +29,26 @@
   </div>
 </header>
 
+<div class="buscar-caja">
+  <input id="buscar" type="search" placeholder="Buscar por productos" aria-label="Buscar por productos" autocomplete="off">
+</div>
+
+<!-- Galería de promos: se arma desde js/promos.js a partir de PROMOS (carta.js) -->
+<section class="promos" id="promos" aria-label="Promociones" hidden>
+  <div class="promos-marco">
+    <div class="promos-riel" id="promos-riel"></div>
+    <button class="promo-flecha izq" type="button" id="promos-izq" aria-label="Promoción anterior" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <button class="promo-flecha der" type="button" id="promos-der" aria-label="Promoción siguiente" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+  <div class="promos-puntos" id="promos-puntos"></div>
+</section>
+
 <div class="barra">
   <div class="barra-in">
-    <input id="buscar" type="search" placeholder="Buscar por productos" aria-label="Buscar por productos" autocomplete="off">
     <div class="cats-wrap">
       <button class="flecha izq" type="button" id="cats-izq" aria-label="Ver categorías anteriores" hidden>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
@@ -74,7 +91,7 @@
     <div class="m-acciones">
       <p class="m-error" id="m-error" role="alert" hidden></p>
       <div class="m-botones">
-        <button type="button" class="btn-agregar" id="m-agregar">Agregar al carrito</button>
+        <button type="button" class="btn-agregar" id="m-agregar">Agregar al pedido</button>
         <button type="button" class="btn-pedir" id="m-pedir">Pedir ahora</button>
       </div>
     </div>
@@ -96,7 +113,7 @@
       <h3 id="c-titulo">Tu pedido</h3>
       <span class="c-mesa" id="c-mesa" hidden></span>
     </div>
-    <p class="c-vacio" id="c-vacio">Todavía no agregaste nada. Elegí un plato de la carta y tocá “Agregar al Carrito”.</p>
+    <p class="c-vacio" id="c-vacio">Todavía no agregaste nada. Elegí un plato de la carta y tocá “Agregar al pedido”.</p>
     <ul class="c-lista" id="c-lista"></ul>
     <div class="m-acciones" id="c-pie" hidden>
       <div class="c-total"><span>Total</span><strong id="c-total"></strong></div>
@@ -112,5 +129,6 @@
 <script src="js/whatsapp.js"></script>
 <script src="js/funciones.js"></script>
 <script src="js/carrito-ui.js"></script>
+<script src="js/promos.js"></script>
 </body>
 </html>

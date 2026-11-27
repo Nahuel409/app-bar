@@ -13,7 +13,7 @@
   --texto:'Barlow',system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:150px}
+html{scroll-behavior:smooth;scroll-padding-top:130px}
 body{background:var(--fondo);color:var(--marron);font-family:var(--texto);line-height:1.45;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 [hidden]{display:none!important}
@@ -32,7 +32,8 @@ h1{font:800 clamp(1.9rem,5vw,2.8rem)/1 var(--titulos);letter-spacing:.01em}
 
 /* Barra de búsqueda y categorías */
 .barra{position:sticky;top:0;z-index:10;background:var(--fondo);border-bottom:1px solid var(--borde)}
-.barra-in{max-width:1200px;margin:0 auto;padding:.7rem 1.2rem 0}
+.buscar-caja{max-width:1200px;margin:0 auto;padding:.7rem 1.2rem 0}
+.barra-in{max-width:1200px;margin:0 auto;padding:.1rem 1.2rem 0}
 #buscar{width:100%;padding:.8rem 1.1rem;font:500 1rem var(--texto);color:var(--marron);border:1px solid var(--borde);border-radius:14px;background:#fff;box-shadow:0 1px 4px rgba(42,28,18,.05)}
 #buscar:focus{outline:2px solid var(--naranja);border-color:transparent}
 .cats-wrap{position:relative}
@@ -152,10 +153,38 @@ footer{text-align:center;padding:1.6rem 1rem 6.5rem;color:var(--gris);font-size:
 .c-btn:hover{background:var(--crema)}
 .c-btn svg{width:18px;height:18px;fill:none;stroke:var(--marron);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .c-borrar svg{stroke:var(--rojo-osc);stroke-width:2}
+.c-btn:disabled{opacity:.35;cursor:not-allowed}
+.c-btn:disabled:hover{background:transparent}
+.c-editar{margin-top:.4rem;padding:.15rem 0;border:0;background:none;color:var(--naranja-osc);font:600 .85rem var(--texto);text-decoration:underline;cursor:pointer}
 .c-n{min-width:26px;text-align:center;font-weight:700}
 .c-total{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.6rem;font-size:1.25rem}
 .c-total strong{color:var(--rojo-osc)}
 .c-vaciar{display:block;margin:.6rem auto 0;padding:.3rem .6rem;border:0;background:none;color:var(--gris);font:600 .85rem var(--texto);text-decoration:underline;cursor:pointer}
+
+/* Galería de promos (entre el buscador y las categorías) */
+.promos{max-width:1200px;margin:0 auto;padding:.8rem 1.2rem 0}
+.promos-marco{position:relative}
+.promos-riel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:20px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.promos-riel::-webkit-scrollbar{display:none}
+.promo{position:relative;flex:0 0 100%;scroll-snap-align:start;display:flex;align-items:flex-end;min-height:230px;overflow:hidden;border-radius:20px;color:#fff;cursor:pointer;background:linear-gradient(135deg,#7a3e12,#c4560a 55%,#ee7a12)}
+.promo-ico{position:absolute;top:1rem;right:1.4rem;font-size:4.5rem;line-height:1;opacity:.4}
+.promo>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.promo::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(42,28,18,.9) 0,rgba(42,28,18,.4) 55%,transparent 100%)}
+.promo-txt{position:relative;z-index:1;width:100%;padding:1rem 1.1rem 1.1rem}
+.promo h3{font:800 1.6rem/1.05 var(--titulos);text-transform:uppercase;letter-spacing:.02em}
+.promo p{margin:.3rem 0 .75rem;font-size:.9rem;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-clamp:2}
+.promo-pie{display:flex;align-items:center;justify-content:space-between;gap:.8rem}
+.promo-precio{font:800 1.6rem var(--titulos)}
+.promo-btn{padding:.6rem 1.1rem;border:0;border-radius:999px;background:var(--rojo);color:#fff;font:700 .95rem var(--texto);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.promo-btn:hover{background:var(--rojo-osc)}
+.promo-flecha{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:38px;height:38px;display:grid;place-items:center;border:0;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 1px 6px rgba(0,0,0,.3);cursor:pointer}
+.promo-flecha.izq{left:8px}
+.promo-flecha.der{right:8px}
+.promo-flecha svg{width:20px;height:20px;fill:none;stroke:var(--marron);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+@media(hover:none){.promo-flecha{display:none}}
+.promos-puntos{display:flex;justify-content:center;gap:.4rem;padding:.6rem 0 .1rem}
+.punto{width:8px;height:8px;padding:0;border:0;border-radius:999px;background:#d9cbbd;cursor:pointer;transition:.25s}
+.punto.activo{width:22px;background:var(--naranja)}
 
 /* Opciones del plato */
 .m-opc{padding:.3rem .35rem .6rem}

@@ -10,7 +10,7 @@ const NEGOCIO = {
   lema: 'Tu lugar para comer rico y pasarla bien',
   dias: 'Martes a domingos',
   direccion: 'Roca 1323',
-  whatsapp: '3482270495', //'5493482636340',          // sin + ni espacios
+  whatsapp: '3482270495',          // sin + ni espacios
   logo: 'assets/img/logo.png'
 };
 
@@ -136,20 +136,23 @@ const CARTA = [
     { nombre: 'Mega Napo', desc: 'Milanesa mega napolitana', precio: 45000 }
   ]},
 
-  // Esta categoría se reemplaza por la galería deslizable en el Sprint 7
-  { id: 'promos', nombre: 'Promos Beto’s', icono: ICONOS.promo, platos: [
-    { nombre: 'Caja XL Beto’s', desc: 'Dos sándwiches de milanesa de carne, papas fritas y pote de mayonesa casera', precio: 28000 },
-    { nombre: 'Dos Burguer con papas fritas', desc: 'Dos hamburguesas con papas fritas', precio: 13000 },
-    { nombre: '1/2 Muzza + 1/2 docena de empanadas', desc: 'Media pizza muzza y media docena de empanadas', precio: 15000, elegir: [{ titulo: 'Empanadas', opciones: ['Carne', 'Jamón y queso'] }] },
-    { nombre: 'Sándwich de milanesa de pollo (20 cm)', desc: 'Sándwich de milanesa de pollo de 20 cm', precio: 12000 },
-    { nombre: 'Picada milanesa de pollo x 2', desc: 'Picada de milanesa de pollo para dos personas', precio: 20000 },
-    { nombre: 'Triple de pollo + 1/2 docena de empanadas', desc: 'Triple de pollo y media docena de empanadas', precio: 21000 },
-    { nombre: 'Caja XXI Burguer', desc: 'Caja de hamburguesas con pan Bimbo', precio: 25000 }
-  ]},
-
   { id: 'menu-infantil', nombre: 'Menú infantil', icono: ICONOS.infantil, platos: [
     { nombre: 'Patitas de pollo', desc: 'Patitas de pollo con papas fritas y gaseosa 500 cc', precio: 12000 }
   ]}
+];
+
+// ---------- 5. PROMOS (galería deslizable arriba de la carta) ----------
+// Cada promo usa los mismos campos que un plato (nombre, desc, precio, y opcionalmente elegir, variantes, etc.).
+//   img -> imagen de la promo, ej: 'assets/promos/caja-xl.jpg'. Si no existe, se muestra un fondo de color con ícono.
+// El orden de esta lista es el orden en la galería. Para sacar una promo, borrar su línea.
+const PROMOS = [
+  { nombre: 'Caja XL Beto’s', desc: 'Dos sándwiches de milanesa de carne, papas fritas y pote de mayonesa casera', precio: 28000, img: 'assets/promos/caja-xl-betos.jpg' },
+  { nombre: 'Dos Burguer con papas fritas', desc: 'Dos hamburguesas con papas fritas', precio: 13000, img: 'assets/promos/dos-burguer.jpg' },
+  { nombre: '1/2 Muzza + 1/2 docena de empanadas', desc: 'Media pizza muzza y media docena de empanadas', precio: 15000, img: 'assets/promos/media-muzza-empanadas.jpg', elegir: [{ titulo: 'Empanadas', opciones: ['Carne', 'Jamón y queso'] }] },
+  { nombre: 'Sándwich de milanesa de pollo (20 cm)', desc: 'Sándwich de milanesa de pollo de 20 cm', precio: 12000, img: 'assets/promos/sandwich-pollo.jpg' },
+  { nombre: 'Picada milanesa de pollo x 2', desc: 'Picada de milanesa de pollo para dos personas', precio: 20000, img: 'assets/promos/picada-pollo.jpg' },
+  { nombre: 'Triple de pollo + 1/2 docena de empanadas', desc: 'Triple de pollo y media docena de empanadas', precio: 21000, img: 'assets/promos/triple-pollo-empanadas.jpg' },
+  { nombre: 'Caja XXI Burguer', desc: 'Caja de hamburguesas con pan Bimbo', precio: 25000, img: 'assets/promos/caja-xxi-burguer.jpg' }
 ];
 
 // ---------------------------------------------------------------------
@@ -161,23 +164,25 @@ const CARTA = [
 // =====================================================================
 // NO TOCAR DE ACÁ PARA ABAJO: completa campos y arma el índice por id.
 // =====================================================================
-const PLATOS = {}; // { id: plato }, para buscar rápido (modal, carrito, WhatsApp)
+const PLATOS = {}; // { id: plato }, para buscar rápido (modal, carrito, WhatsApp). Incluye las promos.
+function registrar(p, catId, catNombre) {
+  const slug = p.nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  p.id = p.id || (catId + '-' + slug);
+  if (PLATOS[p.id]) console.warn('ID de plato repetido: ' + p.id);
+  p.categoria = catId;
+  p.categoriaNombre = catNombre; // varios platos se llaman igual en distintas categorías (ej: "Premium")
+  p.video = p.video || null;
+  p.img = p.img || null;
+  p.quitar = p.quitar || [];
+  p.cambios = p.cambios || [];
+  p.elegir = p.elegir || [];
+  p.variantes = p.variantes || null;
+  // Con variantes, "precio" es el más bajo (se muestra como "Desde")
+  if (p.variantes) p.precio = Math.min.apply(null, p.variantes.map(function (v) { return v.precio; }));
+  if (typeof p.precio !== 'number') console.warn('Plato sin precio: ' + p.id);
+  PLATOS[p.id] = p;
+}
 CARTA.forEach(function (cat) {
-  cat.platos.forEach(function (p) {
-    const slug = p.nombre.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    p.id = p.id || (cat.id + '-' + slug);
-    if (PLATOS[p.id]) console.warn('ID de plato repetido: ' + p.id);
-    p.categoria = cat.id;
-    p.categoriaNombre = cat.nombre; // varios platos se llaman igual en distintas categorías (ej: "Premium")
-    p.video = p.video || null;
-    p.img = p.img || null;
-    p.quitar = p.quitar || [];
-    p.cambios = p.cambios || [];
-    p.elegir = p.elegir || [];
-    p.variantes = p.variantes || null;
-    // Con variantes, "precio" es el más bajo (se muestra como "Desde")
-    if (p.variantes) p.precio = Math.min.apply(null, p.variantes.map(function (v) { return v.precio; }));
-    if (typeof p.precio !== 'number') console.warn('Plato sin precio: ' + p.id);
-    PLATOS[p.id] = p;
-  });
+  cat.platos.forEach(function (p) { registrar(p, cat.id, cat.nombre); });
 });
+PROMOS.forEach(function (p) { registrar(p, 'promos', 'Promos'); });

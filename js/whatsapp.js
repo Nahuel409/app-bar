@@ -24,6 +24,11 @@ function armarMensaje(items, mesa) {
 
 function enviarWhatsApp(items) {
   const url = 'https://wa.me/' + NEGOCIO.whatsapp + '?text=' + encodeURIComponent(armarMensaje(items, MESA));
+  // Los enlaces muy largos fallan en algunos celulares. El carrito ya limita los ítems, esto es una red de seguridad.
+  if (url.length > 7500) {
+    window.alert('El pedido es demasiado largo para enviarlo de una sola vez. Sacá algunos productos o hacelo en dos pedidos.');
+    return;
+  }
   const w = window.open(url, '_blank');
   if (!w) window.location.href = url; // si el navegador bloquea la pestaña nueva
 }

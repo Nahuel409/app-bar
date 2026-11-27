@@ -378,37 +378,91 @@ btnPedir.addEventListener('click', function () {
   enviarWhatsApp([s]);
 });
 
-// Agregar al pedido: suma el plato al carrito, cierra el modal y avisa
-document.getElementById('m-agregar').addEventListener('click', function () {
+// Edición de un producto que ya está en el carrito (se abre el mismo modal con sus opciones cargadas)
+let edicion = null; // { i: posición del ítem en el carrito } mientras se edita
+const btnAgregar = document.getElementById('m-agregar');
+
+function marcar(nombre, valor) {
+  const el = contOpc.querySelector('input[name="' + nombre + '"][value="' + valor + '"]');
+  if (el) el.checked = true;
+}
+function precargarSeleccion(item) {
+  const p = platoActual;
+  if (item.variante && p.variantes) {
+    const i = p.variantes.findIndex(function (v) { return v.nombre === item.variante; });
+    if (i > -1) { sel.variante = i; marcar('o-var', i); }
+  }
+  item.elegidas.forEach(function (e) {
+    p.elegir.forEach(function (g, gi) {
+      if (g.titulo !== e.titulo) return;
+      const oi = g.opciones.indexOf(e.opcion);
+      if (oi > -1) { sel.elegidas[gi] = oi; marcar('o-el-' + gi, oi); }
+    });
+  });
+  item.cambios.forEach(function (c) {
+    const i = p.cambios.findIndex(function (x) { return x.de + ' → ' + x.por === c; });
+    if (i > -1) { sel.cambios.push(i); marcar('o-cambio', i); }
+  });
+  item.quitar.forEach(function (q) {
+    const i = p.quitar.indexOf(q);
+    if (i > -1) { sel.quitar.push(i); marcar('o-sin', i); }
+  });
+  sincronizarOpciones();
+  actualizarPrecio();
+}
+
+// Agregar al pedido (o guardar cambios si se está editando)
+btnAgregar.addEventListener('click', function () {
   const s = seleccionCompleta();
   if (!s) return;
-  Carrito.agregar(s);
+  if (edicion) {
+    Carrito.reemplazar(edicion.i, s);
+    cerrarModal(); // al cerrar vuelve al carrito
+    return;
+  }
+  if (!Carrito.agregar(s)) {
+    errorPedido.textContent = 'Tu pedido ya tiene ' + Carrito.MAX_ITEMS + ' productos distintos, que es el máximo. Enviá este pedido y después hacé otro.';
+    errorPedido.hidden = false;
+    return;
+  }
   cerrarModal();
   avisarAgregado(s.nombre);
 });
+
+// Abre el modal de un plato. Con "item" (y su posición) abre en modo edición.
+function abrirPlato(plato, boton, item, indice) {
+  document.getElementById('m-nombre').textContent = plato.nombre;
+  document.getElementById('m-desc').textContent = plato.desc;
+  document.getElementById('m-cat').textContent = plato.categoriaNombre;
+  platoActual = plato;
+  sel = nuevaSeleccion();
+  edicion = item ? { i: indice } : null;
+  btnAgregar.textContent = item ? 'Guardar cambios' : 'Agregar al pedido';
+  btnPedir.hidden = !!item;
+  errorPedido.hidden = true;
+  dibujarOpciones(plato);
+  if (item) precargarSeleccion(item);
+  actualizarPrecio();
+  mostrarMedia(plato);
+  document.querySelector('.hoja').scrollTop = 0;
+  ultimoBoton = boton;
+  modal.classList.add('abierto');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  cerrar.focus();
+}
+// Lo llama el carrito (botón "Editar")
+function editarPlato(item, indice) {
+  const plato = PLATOS[item.id];
+  if (plato) abrirPlato(plato, null, item, indice);
+}
 
 // Ver plato
 carta.addEventListener('click', function (e) {
   const clic = e.target.closest('.ver, .foto');
   if (!clic) return;
-  const btn = clic.closest('.plato').querySelector('.ver');
   const plato = PLATOS[clic.dataset.id];
-  if (!plato) return;
-  document.getElementById('m-nombre').textContent = plato.nombre;
-  document.getElementById('m-desc').textContent = plato.desc;
-  platoActual = plato;
-  sel = nuevaSeleccion();
-  errorPedido.hidden = true;
-  document.getElementById('m-cat').textContent = plato.categoriaNombre;
-  dibujarOpciones(plato);
-  actualizarPrecio();
-  mostrarMedia(plato);
-  document.querySelector('.hoja').scrollTop = 0;
-  ultimoBoton = btn;
-  modal.classList.add('abierto');
-  modal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-  cerrar.focus();
+  if (plato) abrirPlato(plato, clic.closest('.plato').querySelector('.ver'));
 });
 
 function cerrarModal() {
@@ -423,6 +477,8 @@ function cerrarModal() {
     if (v) { v.pause(); v.removeAttribute('src'); v.load(); }
     zonaMedia.innerHTML = '';
   }, 300);
+  // Si se estaba editando un producto del carrito, se vuelve al carrito
+  if (edicion) { edicion = null; abrirCarrito(); }
 }
 cerrar.addEventListener('click', cerrarModal);
 modal.addEventListener('click', function (e) { if (e.target === modal) cerrarModal(); });

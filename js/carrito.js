@@ -16,7 +16,8 @@ function lineasDetalle(it) {
 const Carrito = (function () {
   const CLAVE = 'betos-carrito-v1';
   const VIDA_MS = 12 * 60 * 60 * 1000;
-  const MAX = 99;
+  const MAX = 99;        // unidades por ítem
+  const MAX_ITEMS = 15;  // ítems distintos (mantiene el mensaje de WhatsApp dentro del largo que admite el enlace)
   let items = [];
   const oyentes = [];
 
@@ -42,6 +43,15 @@ const Carrito = (function () {
       if (!v) return null;
       pr = v.precio;
     }
+    // Las opciones guardadas tienen que seguir existiendo en la carta actual (por si se editó carta.js)
+    const okElegidas = p.elegir.every(function (g) {
+      return it.elegidas.some(function (e) { return e.titulo === g.titulo && g.opciones.indexOf(e.opcion) !== -1; });
+    }) && it.elegidas.length === p.elegir.length;
+    const okCambios = it.cambios.every(function (c) {
+      return p.cambios.some(function (x) { return x.de + ' → ' + x.por === c; });
+    });
+    const okQuitar = it.quitar.every(function (q) { return p.quitar.indexOf(q) !== -1; });
+    if (!okElegidas || !okCambios || !okQuitar) return null;
     it.nombre = p.nombre;
     it.categoria = p.categoriaNombre;
     it.precio = pr;
@@ -62,23 +72,46 @@ const Carrito = (function () {
     oyentes.forEach(function (f) { f(); });
   }
 
+  function construir(sel, cantidad) {
+    const it = {
+      id: sel.id, nombre: sel.nombre, categoria: sel.categoria, varTitulo: sel.varTitulo,
+      variante: sel.variante, precio: sel.precio, cantidad: cantidad,
+      elegidas: sel.elegidas, cambios: sel.cambios, quitar: sel.quitar
+    };
+    it.key = firmar(it);
+    return it;
+  }
+
   cargar();
 
   return {
+    MAX: MAX,
+    MAX_ITEMS: MAX_ITEMS,
     lista: function () { return items; },
     cantidad: function () { return items.reduce(function (a, it) { return a + it.cantidad; }, 0); },
     total: function () { return items.reduce(function (a, it) { return a + it.precio * it.cantidad; }, 0); },
     alCambiar: function (f) { oyentes.push(f); },
+    // Devuelve false si el carrito ya tiene el máximo de ítems distintos
     agregar: function (sel) {
-      const it = {
-        id: sel.id, nombre: sel.nombre, categoria: sel.categoria, varTitulo: sel.varTitulo,
-        variante: sel.variante, precio: sel.precio, cantidad: 1,
-        elegidas: sel.elegidas, cambios: sel.cambios, quitar: sel.quitar
-      };
-      it.key = firmar(it);
+      const it = construir(sel, 1);
       const igual = items.filter(function (x) { return x.key === it.key; })[0];
       if (igual) igual.cantidad = Math.min(MAX, igual.cantidad + 1);
-      else items.push(it);
+      else {
+        if (items.length >= MAX_ITEMS) return false;
+        items.push(it);
+      }
+      cambio();
+      return true;
+    },
+    // Reemplaza las opciones de un ítem (edición). Conserva la cantidad; si queda igual a otro ítem, se juntan
+    reemplazar: function (i, sel) {
+      const viejo = items[i];
+      if (!viejo) return;
+      const nuevo = construir(sel, viejo.cantidad);
+      items.splice(i, 1);
+      const igual = items.filter(function (x) { return x.key === nuevo.key; })[0];
+      if (igual) igual.cantidad = Math.min(MAX, igual.cantidad + nuevo.cantidad);
+      else items.splice(i, 0, nuevo);
       cambio();
     },
     // delta +1 / -1. Si llega a 0 se elimina el ítem
