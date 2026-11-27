@@ -11,6 +11,14 @@ const cTotal = document.getElementById('c-total');
 const cMesa = document.getElementById('c-mesa');
 const aviso = document.getElementById('toast');
 let temporizadorAviso = null;
+const cPago = document.getElementById('c-pago');
+const cTransf = document.getElementById('c-transf');
+const cErrorPago = document.getElementById('c-error-pago');
+const avisoPago = document.getElementById('pago-aviso');
+let formaPago = null; // 'efectivo' | 'transferencia'
+
+document.getElementById('c-alias').textContent = NEGOCIO.pago.alias;
+document.getElementById('c-titular').textContent = NEGOCIO.pago.titular;
 
 if (MESA) { cMesa.textContent = 'Mesa ' + MESA; cMesa.hidden = false; }
 
@@ -24,6 +32,8 @@ function pintarBoton() {
 function pintarPanel() {
   const items = Carrito.lista();
   cVacio.hidden = items.length > 0;
+  cPago.hidden = items.length === 0;
+  document.getElementById('c-monto').textContent = precio(Carrito.total());
   cPie.hidden = items.length === 0;
   cLista.innerHTML = items.map(function (it, i) {
     const det = lineasDetalle(it).map(function (d) { return '<li>' + d + '</li>'; }).join('');
@@ -81,11 +91,64 @@ cLista.addEventListener('click', function (e) {
   if (!b) return;
   Carrito.cambiarCantidad(Number(b.dataset.i), Number(b.dataset.d));
 });
+// Forma de pago
+cPago.addEventListener('change', function (e) {
+  if (e.target.name !== 'o-pago') return;
+  formaPago = e.target.value;
+  cTransf.hidden = formaPago !== 'transferencia';
+  cErrorPago.hidden = true;
+  cPago.classList.remove('falta');
+});
+
+// Copiar alias / monto (el monto se copia sin puntos ni símbolo, para pegarlo directo en la app del banco)
+function copiarTexto(texto, boton) {
+  function listo() {
+    const antes = boton.textContent;
+    boton.textContent = '¡Copiado!';
+    setTimeout(function () { boton.textContent = antes; }, 1500);
+  }
+  function respaldo() {
+    const t = document.createElement('textarea');
+    t.value = texto;
+    t.style.position = 'fixed';
+    t.style.opacity = '0';
+    document.body.appendChild(t);
+    t.select();
+    try { document.execCommand('copy'); listo(); } catch (e) {}
+    t.remove();
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(texto).then(listo, respaldo);
+  else respaldo();
+}
+document.getElementById('c-copiar-alias').addEventListener('click', function (e) { copiarTexto(NEGOCIO.pago.alias, e.currentTarget); });
+document.getElementById('c-copiar-monto').addEventListener('click', function (e) { copiarTexto(String(Carrito.total()), e.currentTarget); });
+
+// Enviar: exige elegir la forma de pago
 document.getElementById('c-enviar').addEventListener('click', function () {
-  if (Carrito.lista().length) enviarWhatsApp(Carrito.lista());
+  if (!Carrito.lista().length) return;
+  if (!formaPago) {
+    cErrorPago.textContent = 'Elegí cómo vas a pagar para enviar el pedido.';
+    cErrorPago.hidden = false;
+    cPago.classList.add('falta');
+    cPago.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  enviarWhatsApp(Carrito.lista(), formaPago);
+  if (formaPago === 'transferencia') {
+    avisoPago.classList.add('abierto');
+    avisoPago.setAttribute('aria-hidden', 'false');
+  }
+});
+document.getElementById('pago-aviso-ok').addEventListener('click', function () {
+  avisoPago.classList.remove('abierto');
+  avisoPago.setAttribute('aria-hidden', 'true');
 });
 document.getElementById('c-vaciar').addEventListener('click', function () {
-  if (window.confirm('¿Querés vaciar todo el pedido?')) Carrito.vaciar();
+  if (!window.confirm('¿Querés vaciar todo el pedido?')) return;
+  Carrito.vaciar();
+  formaPago = null;
+  cTransf.hidden = true;
+  cPago.querySelectorAll('input').forEach(function (i) { i.checked = false; });
 });
 
 // Aviso "agregado al pedido" + la burbuja del botón rebota

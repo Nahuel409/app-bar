@@ -216,8 +216,14 @@ function activarZoom(caja, video) {
 }
 
 // Muestra el video del plato; si no tiene o el archivo no existe, "Video próximamente"
-function mostrarMedia(plato) {
-  if (!plato.video) { crearProximamente(); return; }
+let videoMostrado = null; // video que se está mostrando (para no recargarlo si no cambió)
+function mostrarMedia(plato, variante) {
+  // El video depende de la variante elegida (ej: pizza casera vs masa madre); si no tiene, usa el del plato
+  const src = (variante && variante.video) || plato.video;
+  const poster = (variante && variante.img) || plato.img;
+  if (!src) { crearProximamente(); videoMostrado = null; return; }
+  if (src === videoMostrado && zonaMedia.querySelector('video')) return;
+  videoMostrado = src;
   zonaMedia.innerHTML =
     '<div class="zoom-caja">' +
       '<video muted loop playsinline autoplay preload="auto" aria-label="Video de ' + plato.nombre + '"></video>' +
@@ -231,9 +237,9 @@ function mostrarMedia(plato) {
     '</div>';
   const caja = zonaMedia.querySelector('.zoom-caja');
   const video = caja.querySelector('video');
-  if (plato.img) video.poster = plato.img;
+  if (poster) video.poster = poster;
   video.addEventListener('error', crearProximamente);
-  video.src = plato.video;
+  video.src = src;
   activarZoom(caja, video);
   const r = video.play();
   if (r && typeof r.catch === 'function') r.catch(function () {});
@@ -309,7 +315,10 @@ contOpc.addEventListener('change', function (e) {
   t.closest('.opc-grupo').classList.remove('falta');
   if (!contOpc.querySelector('.opc-grupo.falta')) errorPedido.hidden = true;
   const i = Number(t.value);
-  if (t.name === 'o-var') sel.variante = i;
+  if (t.name === 'o-var') {
+    sel.variante = i;
+    mostrarMedia(platoActual, platoActual.variantes[i]); // cambia el video según la variante
+  }
   else if (t.name.indexOf('o-el-') === 0) sel.elegidas[t.name.slice(5)] = i;
   else if (t.name === 'o-cambio' || t.name === 'o-sin') {
     const lista = t.name === 'o-cambio' ? sel.cambios : sel.quitar;
@@ -443,7 +452,8 @@ function abrirPlato(plato, boton, item, indice) {
   dibujarOpciones(plato);
   if (item) precargarSeleccion(item);
   actualizarPrecio();
-  mostrarMedia(plato);
+  videoMostrado = null;
+  mostrarMedia(plato, sel.variante === null ? null : plato.variantes[sel.variante]);
   document.querySelector('.hoja').scrollTop = 0;
   ultimoBoton = boton;
   modal.classList.add('abierto');
@@ -476,6 +486,7 @@ function cerrarModal() {
     const v = zonaMedia.querySelector('video');
     if (v) { v.pause(); v.removeAttribute('src'); v.load(); }
     zonaMedia.innerHTML = '';
+    videoMostrado = null;
   }, 300);
   // Si se estaba editando un producto del carrito, se vuelve al carrito
   if (edicion) { edicion = null; abrirCarrito(); }

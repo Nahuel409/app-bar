@@ -115,11 +115,35 @@
     </div>
     <p class="c-vacio" id="c-vacio">Todavía no agregaste nada. Elegí un plato de la carta y tocá “Agregar al pedido”.</p>
     <ul class="c-lista" id="c-lista"></ul>
+    <!-- Forma de pago (solo en el carrito) -->
+    <div class="c-pago" id="c-pago" hidden>
+      <div class="opc-titulo">¿Cómo vas a pagar? <em>Obligatorio</em></div>
+      <div class="chips">
+        <label class="chip"><input type="radio" name="o-pago" value="efectivo"><span>Efectivo</span></label>
+        <label class="chip"><input type="radio" name="o-pago" value="transferencia"><span>Transferencia / Mercado Pago</span></label>
+      </div>
+      <div class="c-transf" id="c-transf" hidden>
+        <p>Transferí el total exacto a esta cuenta y <strong>después de enviar el pedido, adjuntá la captura del comprobante en el chat de WhatsApp</strong>.</p>
+        <div class="c-dato"><span>Alias</span><strong id="c-alias"></strong><button type="button" id="c-copiar-alias">Copiar</button></div>
+        <div class="c-dato"><span>Titular</span><strong id="c-titular"></strong></div>
+        <div class="c-dato"><span>Monto</span><strong id="c-monto"></strong><button type="button" id="c-copiar-monto">Copiar</button></div>
+      </div>
+    </div>
     <div class="m-acciones" id="c-pie" hidden>
+      <p class="m-error" id="c-error-pago" role="alert" hidden></p>
       <div class="c-total"><span>Total</span><strong id="c-total"></strong></div>
       <button type="button" class="btn-pedir" id="c-enviar">Enviar pedido por WhatsApp</button>
       <button type="button" class="c-vaciar" id="c-vaciar">Vaciar pedido</button>
     </div>
+  </div>
+</div>
+
+<!-- Recordatorio después de enviar un pedido pagado por transferencia -->
+<div class="modal" id="pago-aviso" aria-hidden="true">
+  <div class="hoja pago-aviso-hoja" role="alertdialog" aria-modal="true" aria-labelledby="pa-titulo">
+    <h3 id="pa-titulo">Un último paso</h3>
+    <p>Se abrió WhatsApp con tu pedido. <strong>Enviá el mensaje y adjuntá la captura del comprobante de pago</strong> en el mismo chat, así el local confirma tu pedido.</p>
+    <button type="button" class="btn-pedir" id="pago-aviso-ok">Entendido</button>
   </div>
 </div>
 

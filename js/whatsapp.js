@@ -3,10 +3,16 @@
 // Los ítems tienen la forma de Carrito (o de obtenerSeleccion() + "cantidad").
 // El precio aparece solo en el total.
 
-function armarMensaje(items, mesa) {
+const PAGOS = {
+  efectivo: 'Efectivo',
+  transferencia: 'Transferencia- SE ESPERA COMPROBANTE'
+};
+
+function armarMensaje(items, mesa, pago) {
   const L = [];
   L.push('*Pedido · ' + NEGOCIO.nombre + '*');
   L.push(mesa ? 'Mesa: ' + mesa : 'Mesa: sin indicar');
+  if (pago && PAGOS[pago]) L.push('Pago: ' + PAGOS[pago]);
   L.push('');
 
   let total = 0;
@@ -22,8 +28,8 @@ function armarMensaje(items, mesa) {
   return L.join('\n');
 }
 
-function enviarWhatsApp(items) {
-  const url = 'https://wa.me/' + NEGOCIO.whatsapp + '?text=' + encodeURIComponent(armarMensaje(items, MESA));
+function enviarWhatsApp(items, pago) {
+  const url = 'https://wa.me/' + NEGOCIO.whatsapp + '?text=' + encodeURIComponent(armarMensaje(items, MESA, pago));
   // Los enlaces muy largos fallan en algunos celulares. El carrito ya limita los ítems, esto es una red de seguridad.
   if (url.length > 7500) {
     window.alert('El pedido es demasiado largo para enviarlo de una sola vez. Sacá algunos productos o hacelo en dos pedidos.');
